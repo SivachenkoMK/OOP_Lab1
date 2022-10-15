@@ -51,7 +51,7 @@ namespace Excel
             var expression = textBox1.Text;
             if (expression == "") return;
             _table.ChangeCellWithAllPointers(row, col, expression, dataGridView1);
-            dataGridView1[col, row].Value = Table.Grid[row][col].value;
+            dataGridView1[col, row].Value = Table.Grid[row][col].Value;
         }
 
         private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
@@ -62,7 +62,7 @@ namespace Excel
             var expression = "";
             try
             {
-                expression = Table.Grid[row][col].expression;
+                expression = Table.Grid[row][col].Expression;
             }
             catch 
             {
@@ -89,7 +89,7 @@ namespace Excel
         {
             string name = _26BasedSystem.To26System(_table.ColCount);
             dataGridView1.Columns.Add(name, name);
-            _table.AddCol(dataGridView1);
+            _table.AddCol();
         }
 
         private void delRowButton_Click(object sender, EventArgs e)
