@@ -3,7 +3,7 @@ using Antlr4.Runtime;
 
 namespace Excel
 {
-    class ThrowExceptionErrorListener : BaseErrorListener, IAntlrErrorListener<int>
+    public class ThrowExceptionErrorListener : BaseErrorListener, IAntlrErrorListener<int>
     {
         //BaseErrorListener implementation
         public override void SyntaxError(IRecognizer recognizer, IToken offendingSymbol, int line, int charPositionInLine, string msg, RecognitionException e)

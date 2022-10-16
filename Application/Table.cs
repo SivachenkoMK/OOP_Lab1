@@ -21,20 +21,15 @@ namespace Excel
             SetTable(DefaultCol, DefaultRow);
         }
 
-        public Table(int col, int row)
-        {
-            SetTable(col, row);
-        }
-
         public void SetTable(int col, int row)
         {
             Clear();
             ColCount = col;
             RowCount = row;
-            for (int i = 0; i < RowCount; i++)
+            for (var i = 0; i < RowCount; i++)
             {
                 var newRow = new List<Cell>();
-                for (int j = 0; j < ColCount; j++)
+                for (var j = 0; j < ColCount; j++)
                 {
                     newRow.Add(new Cell(i, j));
                     _dictionary.Add(newRow.Last().GetName(), "");
@@ -46,7 +41,7 @@ namespace Excel
 
         public void Clear()
         {
-            foreach (List<Cell> list in Grid)
+            foreach (var list in Grid)
                 list.Clear();
             Grid.Clear();
             _dictionary.Clear();

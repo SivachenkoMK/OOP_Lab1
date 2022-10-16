@@ -3,10 +3,10 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace UnitTests
 {
-    [TestClass()]
+    [TestClass]
     public class CalculatorTests
     {
-        [TestMethod()]
+        [TestMethod]
         public void EvaluateTestUnaryMinus()
         {
             Assert.AreEqual(Calculator.Evaluate("-5"), -5);
@@ -16,7 +16,7 @@ namespace UnitTests
             Assert.AreEqual(Calculator.Evaluate("5+--5"), 10);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void EvaluateTestPow()
         {
             Assert.AreEqual(Calculator.Evaluate("2^3"),8);
@@ -24,7 +24,8 @@ namespace UnitTests
             Assert.AreEqual(Calculator.Evaluate("2^(2^2)"), 16);
             Assert.AreEqual(Calculator.Evaluate("3^2^(2+2)"), 6561);
         }
-        [TestMethod()]
+        
+        [TestMethod]
         public void EvaluateTestIncDec()
         {
             Assert.AreEqual(Calculator.Evaluate("inc(5)"), 6);

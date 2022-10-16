@@ -7,7 +7,7 @@ namespace Excel
     {
         //таблиця ідентифікаторів (тут для прикладу)
         //TODO: в лабораторній роботі заміните на свою!!!!
-        Dictionary<string, double> tableIdentifier = new();
+        private readonly Dictionary<string, double> _tableIdentifier = new();
 
         public override double VisitCompileUnit(LabCalculatorParser.CompileUnitContext context)
         {
@@ -27,7 +27,7 @@ namespace Excel
         {
             var result = context.GetText();
             //TODO: видобути значення змінної з таблиці
-            return tableIdentifier.TryGetValue(result, out var value) ? value : 0.0;
+            return _tableIdentifier.TryGetValue(result, out var value) ? value : 0.0;
         }
         public override double VisitUnaryMinusExpr(LabCalculatorParser.UnaryMinusExprContext context)
         {
