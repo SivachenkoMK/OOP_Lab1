@@ -81,13 +81,13 @@ namespace Excel
                 return;
             }
             dataGridView1.Rows.Add(row);
-            dataGridView1.Rows[_table.RowCount].HeaderCell.Value = _table.RowCount.ToString();
+            dataGridView1.Rows[_table.RowsAmount].HeaderCell.Value = _table.RowsAmount.ToString();
             _table.AddRow(dataGridView1);
 
         }
         private void addColButton_Click(object sender, EventArgs e)
         {
-            string name = _26BasedSystem.To26System(_table.ColCount);
+            string name = _26BasedSystem.To26System(_table.ColumsAmount);
             dataGridView1.Columns.Add(name, name);
             _table.AddCol();
         }
@@ -96,14 +96,14 @@ namespace Excel
         {
             if (!_table.DeleteRow(dataGridView1))
                 return;
-            dataGridView1.Rows.RemoveAt(_table.RowCount);
+            dataGridView1.Rows.RemoveAt(_table.RowsAmount);
         }
 
         private void delColButton_Click(object sender, EventArgs e)
         {
             if (!_table.DeleteColumn(dataGridView1))
                 return;
-            dataGridView1.Columns.RemoveAt(_table.ColCount);
+            dataGridView1.Columns.RemoveAt(_table.ColumsAmount);
         }
 
         private void saveButton_Click(object sender, EventArgs e)

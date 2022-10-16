@@ -9,27 +9,27 @@ namespace Excel
 {
     public class Table
     {
-        private const int DefaultCol = 35;
-        private const int DefaultRow = 10;
-        public int ColCount;
-        public int RowCount;
+        private const int DefaultAmountOfColumns = 35;
+        private const int DefaultAmountOfRows = 10;
+        public int ColumsAmount;
+        public int RowsAmount;
         public static readonly List<List<Cell>> Grid = new();
         private readonly Dictionary<string, string> _dictionary = new();
 
         public Table()
         {
-            SetTable(DefaultCol, DefaultRow);
+            SetTable(DefaultAmountOfColumns, DefaultAmountOfRows);
         }
 
         public void SetTable(int col, int row)
         {
             Clear();
-            ColCount = col;
-            RowCount = row;
-            for (var i = 0; i < RowCount; i++)
+            ColumsAmount = col;
+            RowsAmount = row;
+            for (var i = 0; i < RowsAmount; i++)
             {
                 var newRow = new List<Cell>();
-                for (var j = 0; j < ColCount; j++)
+                for (var j = 0; j < ColumsAmount; j++)
                 {
                     newRow.Add(new Cell(i, j));
                     _dictionary.Add(newRow.Last().Name, "");
@@ -45,8 +45,8 @@ namespace Excel
                 list.Clear();
             Grid.Clear();
             _dictionary.Clear();
-            RowCount = 0;
-            ColCount = 0;
+            RowsAmount = 0;
+            ColumsAmount = 0;
         }
 
         private string Calculate(string expression)
@@ -198,37 +198,37 @@ namespace Excel
         public void AddRow(DataGridView dataGridView1)
         {
             var newRow = new List<Cell>();
-            for (var i = 0; i < ColCount; i++)
+            for (var i = 0; i < ColumsAmount; i++)
             {
-                newRow.Add(new Cell(RowCount, i));
+                newRow.Add(new Cell(RowsAmount, i));
                 _dictionary.Add(newRow.Last().Name, "");
             }
 
             Grid.Add(newRow);
             RefreshReferences();
-            RowCount++;
+            RowsAmount++;
         }
 
         public void AddCol()
         {
-            for (var i = 0; i < RowCount; i++)
+            for (var i = 0; i < RowsAmount; i++)
             {
-                Grid[i].Add(new Cell(i, ColCount));
+                Grid[i].Add(new Cell(i, ColumsAmount));
                 _dictionary.Add(Grid[i].Last().Name, "");
             }
 
             RefreshReferences();
-            ColCount++;
+            ColumsAmount++;
         }
 
         public bool DeleteRow(DataGridView dataGridView1)
         {
             var lastRowRef = new List<Cell>(); //Cells that have references on the delete row
             var notEmptyCells = new List<Cell>();
-            if (RowCount == 0)
+            if (RowsAmount == 0)
                 return false;
-            var curCount = RowCount - 1;
-            for (var i = 0; i < ColCount; i++)
+            var curCount = RowsAmount - 1;
+            for (var i = 0; i < ColumsAmount; i++)
             {
                 var name = FullName(curCount, i);
                 if (_dictionary[name] != "0" && _dictionary[name] != "" && _dictionary[name] != " ")
@@ -260,7 +260,7 @@ namespace Excel
                     return false;
             }
 
-            for (var i = 0; i < ColCount; i++)
+            for (var i = 0; i < ColumsAmount; i++)
             {
                 var name = FullName(curCount, i);
                 _dictionary.Remove(name);
@@ -280,7 +280,7 @@ namespace Excel
             }
 
             Grid.RemoveAt(curCount);
-            RowCount--;
+            RowsAmount--;
             return true;
         }
 
@@ -288,10 +288,10 @@ namespace Excel
         {
             var lastColRef = new List<Cell>(); //Cells that have references on the delete column
             var notEmptyCells = new List<Cell>();
-            if (ColCount == 1)
+            if (ColumsAmount == 1)
                 return false;
-            var curCount = ColCount - 1;
-            for (var i = 0; i < RowCount; i++)
+            var curCount = ColumsAmount - 1;
+            for (var i = 0; i < RowsAmount; i++)
             {
                 var name = FullName(i, curCount);
                 if (_dictionary[name] != "0" && _dictionary[name] != "" && _dictionary[name] != " ")
@@ -323,7 +323,7 @@ namespace Excel
                     return false;
             }
 
-            for (var i = 0; i < RowCount; i++)
+            for (var i = 0; i < RowsAmount; i++)
             {
                 var name = FullName(i, curCount);
                 _dictionary.Remove(name);
@@ -338,17 +338,17 @@ namespace Excel
 
             foreach (var cell in lastColRef)
                 RefreshCellAndPointers(cell, dataGridView1);
-            for (var i = 0; i < RowCount; i++)
+            for (var i = 0; i < RowsAmount; i++)
                 Grid[i].RemoveAt(curCount);
-            ColCount--;
+            ColumsAmount--;
             return true;
 
         }
 
         public void Save(StreamWriter sw)
         {
-            sw.WriteLine(RowCount);
-            sw.WriteLine(ColCount);
+            sw.WriteLine(RowsAmount);
+            sw.WriteLine(ColumsAmount);
 
             foreach (var cell in Grid.SelectMany(list => list).ToList())
             {
@@ -400,7 +400,7 @@ namespace Excel
                         var curRow = _26BasedSystem.From26System(refer).Item1;
                         var curCol = _26BasedSystem.From26System(refer).Item2;
 
-                        if (curRow < RowCount && curCol < ColCount)
+                        if (curRow < RowsAmount && curCol < ColumsAmount)
                             newRef.Add(Grid[curRow][curCol]);
                     }
 
