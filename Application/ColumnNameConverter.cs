@@ -3,7 +3,7 @@
 namespace Excel
 {
 
-    public static class _26BasedSystem
+    public static class ColumnNameConverter
     {
         public static string To26System(int x)
         {

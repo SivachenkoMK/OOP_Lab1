@@ -9,11 +9,13 @@ namespace Excel
 {
     public class Table
     {
+        // TODO: Move to configs
         private const int DefaultAmountOfColumns = 35;
         private const int DefaultAmountOfRows = 10;
-        public int ColumsAmount;
-        public int RowsAmount;
-        public static readonly List<List<Cell>> Grid = new();
+        public int ColumsAmount { get; private set; }
+        public int RowsAmount { get; private set; }
+
+        public readonly List<List<Cell>> Sheet = new();
         private readonly Dictionary<string, string> _dictionary = new();
 
         public Table()
@@ -35,15 +37,15 @@ namespace Excel
                     _dictionary.Add(newRow.Last().Name, "");
                 }
 
-                Grid.Add(newRow);
+                Sheet.Add(newRow);
             }
         } //init table by 2 param
 
         public void Clear()
         {
-            foreach (var list in Grid)
+            foreach (var list in Sheet)
                 list.Clear();
-            Grid.Clear();
+            Sheet.Clear();
             _dictionary.Clear();
             RowsAmount = 0;
             ColumsAmount = 0;
@@ -67,7 +69,7 @@ namespace Excel
         public void ChangeCellWithAllPointers(int row, int col, string expression,
             DataGridView dataGridView1) //refresh cell value with check loops(Main func)
         {
-            var currCell = Grid[row][col];
+            var currCell = Sheet[row][col];
             currCell.DeletePointersAndReferences();
             currCell.Expression = expression;
             currCell.NewReferencesFromThis.Clear();
@@ -143,7 +145,7 @@ namespace Excel
                 return false;
             }
 
-            Grid[cell.Row][cell.Column].Value = value;
+            Sheet[cell.Row][cell.Column].Value = value;
             _dictionary[FullName(cell.Row, cell.Column)] = value;
             dataGridView1[cell.Column, cell.Row].Value = value;
 
@@ -152,7 +154,7 @@ namespace Excel
 
         private void RefreshReferences() //refresh only refs from each cell in all table
         {
-            foreach (List<Cell> list in Grid)
+            foreach (List<Cell> list in Sheet)
             {
                 foreach (Cell cell in list)
                 {
@@ -179,8 +181,8 @@ namespace Excel
             {
                 if (_dictionary.ContainsKey(match.Value)) //addReference
                 {
-                    var nums = _26BasedSystem.From26System(match.Value);
-                    Grid[row][col].NewReferencesFromThis.Add(Grid[nums.Item1][nums.Item2]);
+                    var nums = ColumnNameConverter.From26System(match.Value);
+                    Sheet[row][col].NewReferencesFromThis.Add(Sheet[nums.Item1][nums.Item2]);
                 }
             }
 
@@ -204,7 +206,7 @@ namespace Excel
                 _dictionary.Add(newRow.Last().Name, "");
             }
 
-            Grid.Add(newRow);
+            Sheet.Add(newRow);
             RefreshReferences();
             RowsAmount++;
         }
@@ -213,8 +215,8 @@ namespace Excel
         {
             for (var i = 0; i < RowsAmount; i++)
             {
-                Grid[i].Add(new Cell(i, ColumsAmount));
-                _dictionary.Add(Grid[i].Last().Name, "");
+                Sheet[i].Add(new Cell(i, ColumsAmount));
+                _dictionary.Add(Sheet[i].Last().Name, "");
             }
 
             RefreshReferences();
@@ -232,9 +234,9 @@ namespace Excel
             {
                 var name = FullName(curCount, i);
                 if (_dictionary[name] != "0" && _dictionary[name] != "" && _dictionary[name] != " ")
-                    notEmptyCells.Add(Grid[curCount][i]);
-                if (Grid[curCount][i].PointersToThis.Count != 0) //select cells that points to deleted cell
-                    lastRowRef.AddRange(Grid[curCount][i].PointersToThis);
+                    notEmptyCells.Add(Sheet[curCount][i]);
+                if (Sheet[curCount][i].PointersToThis.Count != 0) //select cells that points to deleted cell
+                    lastRowRef.AddRange(Sheet[curCount][i].PointersToThis);
             }
 
             if (lastRowRef.Count != 0 || notEmptyCells.Count != 0)
@@ -279,7 +281,7 @@ namespace Excel
                 RefreshCellAndPointers(cell, dataGridView1);
             }
 
-            Grid.RemoveAt(curCount);
+            Sheet.RemoveAt(curCount);
             RowsAmount--;
             return true;
         }
@@ -295,9 +297,9 @@ namespace Excel
             {
                 var name = FullName(i, curCount);
                 if (_dictionary[name] != "0" && _dictionary[name] != "" && _dictionary[name] != " ")
-                    notEmptyCells.Add(Grid[i][curCount]);
-                if (Grid[i][curCount].PointersToThis.Count != 0) //select cells that points to deleted cell
-                    lastColRef.AddRange(Grid[i][curCount].PointersToThis);
+                    notEmptyCells.Add(Sheet[i][curCount]);
+                if (Sheet[i][curCount].PointersToThis.Count != 0) //select cells that points to deleted cell
+                    lastColRef.AddRange(Sheet[i][curCount].PointersToThis);
             }
 
             if (lastColRef.Count != 0 || notEmptyCells.Count != 0)
@@ -339,7 +341,7 @@ namespace Excel
             foreach (var cell in lastColRef)
                 RefreshCellAndPointers(cell, dataGridView1);
             for (var i = 0; i < RowsAmount; i++)
-                Grid[i].RemoveAt(curCount);
+                Sheet[i].RemoveAt(curCount);
             ColumsAmount--;
             return true;
 
@@ -350,7 +352,7 @@ namespace Excel
             sw.WriteLine(RowsAmount);
             sw.WriteLine(ColumsAmount);
 
-            foreach (var cell in Grid.SelectMany(list => list).ToList())
+            foreach (var cell in Sheet.SelectMany(list => list).ToList())
             {
                 sw.WriteLine(cell.Name);
                 sw.WriteLine(cell.Expression);
@@ -397,11 +399,11 @@ namespace Excel
                     for (var k = 0; k < refCount; k++)
                     {
                         var refer = sr.ReadLine();
-                        var curRow = _26BasedSystem.From26System(refer).Item1;
-                        var curCol = _26BasedSystem.From26System(refer).Item2;
+                        var curRow = ColumnNameConverter.From26System(refer).Item1;
+                        var curCol = ColumnNameConverter.From26System(refer).Item2;
 
                         if (curRow < RowsAmount && curCol < ColumsAmount)
-                            newRef.Add(Grid[curRow][curCol]);
+                            newRef.Add(Sheet[curRow][curCol]);
                     }
 
                     var pointCount = Convert.ToInt32(sr.ReadLine());
@@ -409,14 +411,14 @@ namespace Excel
                     for (var k = 0; k < pointCount; k++)
                     {
                         var point = sr.ReadLine();
-                        var curRow = _26BasedSystem.From26System(point).Item1;
-                        var curCol = _26BasedSystem.From26System(point).Item2;
-                        newPoint.Add(Grid[curRow][curCol]);
+                        var curRow = ColumnNameConverter.From26System(point).Item1;
+                        var curCol = ColumnNameConverter.From26System(point).Item2;
+                        newPoint.Add(Sheet[curRow][curCol]);
                     }
 
-                    Grid[i][j].SetCell(expression, value, newRef, newPoint);
-                    var columnIndex = Grid[i][j].Column;
-                    var rowIndex = Grid[i][j].Row;
+                    Sheet[i][j].SetCell(expression, value, newRef, newPoint);
+                    var columnIndex = Sheet[i][j].Column;
+                    var rowIndex = Sheet[i][j].Row;
                     dataGridView1[columnIndex, rowIndex].Value = _dictionary[index];
                 }
             }

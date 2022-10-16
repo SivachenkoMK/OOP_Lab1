@@ -1,13 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using System.IO;
+using System.Windows.Forms;
 
 namespace Excel
 {
@@ -27,7 +20,7 @@ namespace Excel
             dataGridView1.ColumnCount = columns;
             for (var i = 0; i < columns; i++)
             {
-                var columnName = _26BasedSystem.To26System(i);
+                var columnName = ColumnNameConverter.To26System(i);
                 dataGridView1.Columns[i].Name = columnName;
                 dataGridView1.Columns[i].SortMode = DataGridViewColumnSortMode.NotSortable;
             }
@@ -51,7 +44,7 @@ namespace Excel
             var expression = textBox1.Text;
             if (expression == "") return;
             _table.ChangeCellWithAllPointers(row, col, expression, dataGridView1);
-            dataGridView1[col, row].Value = Table.Grid[row][col].Value;
+            dataGridView1[col, row].Value = _table.Sheet[row][col].Value;
         }
 
         private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
@@ -62,7 +55,7 @@ namespace Excel
             var expression = "";
             try
             {
-                expression = Table.Grid[row][col].Expression;
+                expression = _table.Sheet[row][col].Expression;
             }
             catch 
             {
@@ -87,7 +80,7 @@ namespace Excel
         }
         private void addColButton_Click(object sender, EventArgs e)
         {
-            string name = _26BasedSystem.To26System(_table.ColumsAmount);
+            string name = ColumnNameConverter.To26System(_table.ColumsAmount);
             dataGridView1.Columns.Add(name, name);
             _table.AddCol();
         }

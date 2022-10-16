@@ -20,7 +20,7 @@ namespace Excel
         {
             Row = row;
             Column = column;
-            Name = _26BasedSystem.To26System(column) + row;
+            Name = ColumnNameConverter.To26System(column) + row;
             Value = "0";
             Expression = "";
         }
