@@ -12,6 +12,7 @@ namespace Excel.Services
     { 
         // TODO: Figure out WTF is it
         private readonly Dictionary<string, string> _dictionary = new();
+        private readonly CellService _cellService = new();
 
         // TODO: Move to configs
         private const int DefaultAmountOfColumns = 35;
@@ -64,18 +65,18 @@ namespace Excel.Services
         public void ChangeCellWithAllPointers(Table table, int row, int col, string expression,
             DataGridView dataGridView1) //refresh cell value with check loops(Main func)
         {
-            var currCell = table.Sheet[row][col];
-            currCell.DeletePointersAndReferences();
-            currCell.Expression = expression;
-            currCell.NewReferencesFromThis.Clear();
+            var currentCell = table.Sheet[row][col];
+            _cellService.DeletePointersAndReferences(currentCell);
+            currentCell.Expression = expression;
+            currentCell.NewReferencesFromThis.Clear();
 
             if (expression != "")
             {
                 if (expression[0] != '=') //expression not formula
                 {
-                    currCell.Value = expression;
+                    currentCell.Value = expression;
                     _dictionary[FullName(row, col)] = expression;
-                    foreach (Cell cell in currCell.PointersToThis)
+                    foreach (var cell in currentCell.PointersToThis)
                     {
                         RefreshCellAndPointers(table, cell, dataGridView1);
                     }
@@ -88,31 +89,31 @@ namespace Excel.Services
             if (newExpression != "")
                 newExpression = newExpression.Remove(0, 1);
 
-            if (!currCell.CheckLoop(currCell.NewReferencesFromThis)) //check new references for loop 
+            if (!_cellService.CheckLoop(currentCell, currentCell.NewReferencesFromThis)) //check new references for loop 
             {
                 MessageBox.Show("There is a loop! Change the expression");
-                currCell.Expression = "";
-                currCell.Value = "";
+                currentCell.Expression = "";
+                currentCell.Value = "";
                 dataGridView1[col, row].Value = "0";
                 return;
             }
 
             //new_references without loops
-            currCell.AddPointersAndReferences();
+            _cellService.AddPointersAndReferences(currentCell);
             string val = Calculate(newExpression); //calculate ready expression
 
             if (val == "Error") //cannot calculate
             {
-                MessageBox.Show("Error in cell " + currCell.Name);
-                currCell.Expression = "";
-                currCell.Value = "0";
-                dataGridView1[currCell.Column, currCell.Row].Value = "0";
+                MessageBox.Show("Error in cell " + currentCell.Name);
+                currentCell.Expression = "";
+                currentCell.Value = "0";
+                dataGridView1[currentCell.Column, currentCell.Row].Value = "0";
                 return;
             }
 
-            currCell.Value = val;
+            currentCell.Value = val;
             _dictionary[FullName(row, col)] = val;
-            foreach (var cell in currCell.PointersToThis) //refresh all cells which has formula with currCell
+            foreach (var cell in currentCell.PointersToThis) //refresh all cells which has formula with currCell
                 RefreshCellAndPointers(table, cell, dataGridView1);
 
         }
@@ -411,7 +412,7 @@ namespace Excel.Services
                         newPoint.Add(table.Sheet[curRow][curCol]);
                     }
 
-                    table.Sheet[i][j].SetCell(expression, value, newRef, newPoint);
+                    _cellService.UpdateCellData(table.Sheet[i][j], expression, value, newRef, newPoint);
                     var columnIndex = table.Sheet[i][j].Column;
                     var rowIndex = table.Sheet[i][j].Row;
                     dataGridView1[columnIndex, rowIndex].Value = _dictionary[index];
