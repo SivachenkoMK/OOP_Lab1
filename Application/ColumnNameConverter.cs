@@ -10,7 +10,7 @@ namespace Excel
             x++;
             var columnName = "";
             if (x == 0) return ((char)64).ToString();
-            while (x>0)
+            while (x > 0)
             {
                 var mod = (x - 1) % 26;
                 columnName = ((char)(65 + mod)) + columnName;
@@ -19,7 +19,7 @@ namespace Excel
             return columnName;
         }
 
-        public static Tuple<int,int> From26System(string input) //change occur 1AA еtc
+        public static Tuple<int, int> From26System(string input) //change occur 1AA еtc
         {
             int col = 0;
             int row = 0;

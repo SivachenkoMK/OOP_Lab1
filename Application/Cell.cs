@@ -68,7 +68,7 @@ namespace Excel
         public void DeletePointersAndReferences()
         {
             if (ReferencesFromThis == null) return;
-            
+
             foreach (var point in ReferencesFromThis)
             {
                 point.PointersToThis.Remove(this);
