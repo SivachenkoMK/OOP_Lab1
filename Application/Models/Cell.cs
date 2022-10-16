@@ -1,11 +1,9 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 
 namespace Excel.Models
 {
     public class Cell
     {
-
         public int Row { get; set; }
         public int Column { get; set; }
         public string Name { get; set; }

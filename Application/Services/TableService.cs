@@ -8,11 +8,16 @@ using Excel.Models;
 
 namespace Excel.Services
 {
-    public class TableService
+    public class TableService : ITableService
     { 
         // TODO: Figure out WTF is it
         private readonly Dictionary<string, string> _dictionary = new();
-        private readonly CellService _cellService = new();
+        private readonly ICellService _cellService;
+
+        public TableService(ICellService cellService)
+        {
+            _cellService = cellService;
+        }
 
         // TODO: Move to configs
         private const int DefaultAmountOfColumns = 35;
@@ -118,7 +123,7 @@ namespace Excel.Services
 
         }
 
-        private static string FullName(int row, int col)
+        private string FullName(int row, int col)
         {
             var cell = new Cell(row, col);
             return cell.Name;

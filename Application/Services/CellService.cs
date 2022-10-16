@@ -4,7 +4,7 @@ using Excel.Models;
 
 namespace Excel.Services
 {
-    public class CellService
+    public class CellService : ICellService
     {
         public void UpdateCellData(Cell cell, string expression, string value, List<Cell> references, List<Cell> pointers)
         {

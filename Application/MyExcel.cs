@@ -9,12 +9,13 @@ namespace Excel
     public partial class MyExcel : Form
     {
         private Table _table = new();
-        private readonly TableService tableService = new();
-        public MyExcel()
+        private readonly ITableService _tableService;
+        
+        public MyExcel(ITableService tableService)
         {
+            _tableService = tableService;
             InitializeComponent();
             InitializeDataGridView(10, 35);
-            tableService = new TableService();
         }
 
         private void InitializeDataGridView(int rows, int columns)
@@ -37,7 +38,7 @@ namespace Excel
 
             dataGridView1.AutoResizeRowHeadersWidth(DataGridViewRowHeadersWidthSizeMode.AutoSizeToAllHeaders);
 
-            _table = tableService.CreateTable(columns, rows);
+            _table = _tableService.CreateTable(columns, rows);
         }
 
 
@@ -47,7 +48,7 @@ namespace Excel
             var row = dataGridView1.SelectedCells[0].RowIndex;
             var expression = textBox1.Text;
             if (expression == "") return;
-            tableService.ChangeCellWithAllPointers(_table, row, col, expression, dataGridView1);
+            _tableService.ChangeCellWithAllPointers(_table, row, col, expression, dataGridView1);
             dataGridView1[col, row].Value = _table.Sheet[row][col].Value;
         }
 
@@ -79,26 +80,26 @@ namespace Excel
             }
             dataGridView1.Rows.Add(row);
             dataGridView1.Rows[_table.RowsAmount].HeaderCell.Value = _table.RowsAmount.ToString();
-            tableService.AddRow(_table, dataGridView1);
+            _tableService.AddRow(_table, dataGridView1);
 
         }
         private void addColButton_Click(object sender, EventArgs e)
         {
             string name = ColumnNameConverter.To26System(_table.ColumnsAmount);
             dataGridView1.Columns.Add(name, name);
-            tableService.AddCol(_table);
+            _tableService.AddCol(_table);
         }
 
         private void delRowButton_Click(object sender, EventArgs e)
         {
-            if (!tableService.DeleteRow(_table, dataGridView1))
+            if (!_tableService.DeleteRow(_table, dataGridView1))
                 return;
             dataGridView1.Rows.RemoveAt(_table.RowsAmount);
         }
 
         private void delColButton_Click(object sender, EventArgs e)
         {
-            if (!tableService.DeleteColumn(_table, dataGridView1))
+            if (!_tableService.DeleteColumn(_table, dataGridView1))
                 return;
             dataGridView1.Columns.RemoveAt(_table.ColumnsAmount);
         }
@@ -114,7 +115,7 @@ namespace Excel
             {
                 FileStream fs = (FileStream)saveFileDialog1.OpenFile();
                 StreamWriter sw = new StreamWriter(fs);
-                tableService.Save(_table, sw);
+                _tableService.Save(_table, sw);
                 sw.Close();
                 fs.Close();
             }
@@ -128,13 +129,13 @@ namespace Excel
             if (openFileDialog1.ShowDialog() != DialogResult.OK)
                 return;
             StreamReader sr = new StreamReader(openFileDialog1.FileName);
-            tableService.Clear(_table);
+            _tableService.Clear(_table);
             dataGridView1.Rows.Clear();
             dataGridView1.Columns.Clear();
             int.TryParse(sr.ReadLine(), out var row);
             int.TryParse(sr.ReadLine(), out var column);
             InitializeDataGridView(row, column);
-            tableService.Open(_table, row, column, sr, dataGridView1);
+            _tableService.Open(_table, row, column, sr, dataGridView1);
             sr.Close();
         }
     }
