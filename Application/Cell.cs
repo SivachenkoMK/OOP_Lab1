@@ -9,7 +9,7 @@ namespace Excel
         public string Value { get; set; }
         public int Row { get; set; }
         public int Column { get; set; }
-        string Name { get; set; }
+        public string Name { get; set; }
 
         public readonly List<Cell> PointersToThis = new();
         public List<Cell> ReferencesFromThis = new();
@@ -74,10 +74,6 @@ namespace Excel
                 point.PointersToThis.Remove(this);
             }
             ReferencesFromThis = null;
-        }
-        public string GetName()
-        {
-            return Name;
         }
     }
 }

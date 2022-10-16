@@ -32,7 +32,7 @@ namespace Excel
                 for (var j = 0; j < ColCount; j++)
                 {
                     newRow.Add(new Cell(i, j));
-                    _dictionary.Add(newRow.Last().GetName(), "");
+                    _dictionary.Add(newRow.Last().Name, "");
                 }
 
                 Grid.Add(newRow);
@@ -106,7 +106,7 @@ namespace Excel
 
             if (val == "Error") //cannot calculate
             {
-                MessageBox.Show("Error in cell " + currCell.GetName());
+                MessageBox.Show("Error in cell " + currCell.Name);
                 currCell.Expression = "";
                 currCell.Value = "0";
                 dataGridView1[currCell.Column, currCell.Row].Value = "0";
@@ -115,15 +115,15 @@ namespace Excel
 
             currCell.Value = val;
             _dictionary[FullName(row, col)] = val;
-            foreach (Cell cell in currCell.PointersToThis) //refresh all cells which has formula with currCell
+            foreach (var cell in currCell.PointersToThis) //refresh all cells which has formula with currCell
                 RefreshCellAndPointers(cell, dataGridView1);
 
         }
 
         private static string FullName(int row, int col)
         {
-            Cell cell = new Cell(row, col);
-            return cell.GetName();
+            var cell = new Cell(row, col);
+            return cell.Name;
         }
 
         private bool RefreshCellAndPointers(Cell cell, DataGridView dataGridView1) //refresh cell
@@ -136,7 +136,7 @@ namespace Excel
 
             if (value == "Error")
             {
-                MessageBox.Show("Error in cell " + cell.GetName());
+                MessageBox.Show("Error in cell " + cell.Name);
                 cell.Expression = "";
                 cell.Value = "0";
                 dataGridView1[cell.Column, cell.Row].Value = "0";
@@ -201,7 +201,7 @@ namespace Excel
             for (var i = 0; i < ColCount; i++)
             {
                 newRow.Add(new Cell(RowCount, i));
-                _dictionary.Add(newRow.Last().GetName(), "");
+                _dictionary.Add(newRow.Last().Name, "");
             }
 
             Grid.Add(newRow);
@@ -214,7 +214,7 @@ namespace Excel
             for (var i = 0; i < RowCount; i++)
             {
                 Grid[i].Add(new Cell(i, ColCount));
-                _dictionary.Add(Grid[i].Last().GetName(), "");
+                _dictionary.Add(Grid[i].Last().Name, "");
             }
 
             RefreshReferences();
@@ -243,7 +243,7 @@ namespace Excel
                 if (notEmptyCells.Count != 0)
                 {
                     errorMessage = notEmptyCells.Aggregate("There are not empty cells: ",
-                        (current, cell) => current + string.Join(";", cell.GetName()));
+                        (current, cell) => current + string.Join(";", cell.Name));
                     errorMessage += "\n";
                 }
 
@@ -251,7 +251,7 @@ namespace Excel
                 {
                     errorMessage += "There are cells that point to cells from current Row:\n";
                     errorMessage = lastRowRef.Aggregate(errorMessage,
-                        (current, cell) => current + string.Join(";", cell.GetName()));
+                        (current, cell) => current + string.Join(";", cell.Name));
                 }
 
                 errorMessage += "\nAre you sure want to delete this column?";
@@ -306,7 +306,7 @@ namespace Excel
                 if (notEmptyCells.Count != 0)
                 {
                     errorMessage = lastColRef.Aggregate("There are not empty cells: ",
-                        (current, cell) => current + string.Join(";", cell.GetName()));
+                        (current, cell) => current + string.Join(";", cell.Name));
                     errorMessage += "\n";
                 }
 
@@ -314,7 +314,7 @@ namespace Excel
                 {
                     errorMessage += "There are cells that point to cells from current column:\n";
                     errorMessage = lastColRef.Aggregate(errorMessage,
-                        (current, cell) => current + string.Join(";", cell.GetName()));
+                        (current, cell) => current + string.Join(";", cell.Name));
                 }
 
                 errorMessage += "\nAre you sure want to delete this column?";
@@ -352,7 +352,7 @@ namespace Excel
 
             foreach (var cell in Grid.SelectMany(list => list).ToList())
             {
-                sw.WriteLine(cell.GetName());
+                sw.WriteLine(cell.Name);
                 sw.WriteLine(cell.Expression);
                 sw.WriteLine(cell.Value);
                 if (cell.ReferencesFromThis == null)
@@ -361,7 +361,7 @@ namespace Excel
                 {
                     sw.WriteLine(cell.ReferencesFromThis.Count);
                     foreach (var refCell in cell.ReferencesFromThis)
-                        sw.WriteLine(refCell.GetName());
+                        sw.WriteLine(refCell.Name);
                 }
 
                 if (cell.PointersToThis == null)
@@ -370,7 +370,7 @@ namespace Excel
                 {
                     sw.WriteLine(cell.PointersToThis.Count);
                     foreach (var pointCell in cell.PointersToThis)
-                        sw.WriteLine(pointCell.GetName());
+                        sw.WriteLine(pointCell.Name);
                 }
             }
         }
