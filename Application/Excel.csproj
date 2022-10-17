@@ -18,9 +18,4 @@
     <PackageReference Include="MSTest.TestFramework" Version="2.2.10" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Configs" />
-    <Folder Include="Configs\" />
-  </ItemGroup>
-
 </Project>
