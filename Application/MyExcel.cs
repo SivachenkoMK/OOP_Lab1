@@ -21,23 +21,23 @@ namespace Excel
 
         private void InitializeDataGridView(int rows, int columns)
         {
-            dataGridView1.ColumnHeadersVisible = true;
-            dataGridView1.RowHeadersVisible = true;
-            dataGridView1.ColumnCount = columns;
+            dataGridView.ColumnHeadersVisible = true;
+            dataGridView.RowHeadersVisible = true;
+            dataGridView.ColumnCount = columns;
             for (var i = 0; i < columns; i++)
             {
                 var columnName = ColumnNameConverter.To26System(i);
-                dataGridView1.Columns[i].Name = columnName;
-                dataGridView1.Columns[i].SortMode = DataGridViewColumnSortMode.NotSortable;
+                dataGridView.Columns[i].Name = columnName;
+                dataGridView.Columns[i].SortMode = DataGridViewColumnSortMode.NotSortable;
             }
 
             for (var i = 0; i < rows; i++)
             {
-                dataGridView1.Rows.Add("");
-                dataGridView1.Rows[i].HeaderCell.Value = i.ToString();
+                dataGridView.Rows.Add("");
+                dataGridView.Rows[i].HeaderCell.Value = i.ToString();
             }
 
-            dataGridView1.AutoResizeRowHeadersWidth(DataGridViewRowHeadersWidthSizeMode.AutoSizeToAllHeaders);
+            dataGridView.AutoResizeRowHeadersWidth(DataGridViewRowHeadersWidthSizeMode.AutoSizeToAllHeaders);
 
             _table = _tableService.CreateTable(columns, rows);
         }
@@ -45,19 +45,19 @@ namespace Excel
 
         private void calculateButton_Click(object sender, EventArgs e)
         {
-            var col = dataGridView1.SelectedCells[0].ColumnIndex;
-            var row = dataGridView1.SelectedCells[0].RowIndex;
-            var expression = textBox1.Text;
+            var col = dataGridView.SelectedCells[0].ColumnIndex;
+            var row = dataGridView.SelectedCells[0].RowIndex;
+            var expression = textBox.Text;
             if (expression == "") return;
-            _tableService.ChangeCellWithAllPointers(_table, row, col, expression, dataGridView1);
-            dataGridView1[col, row].Value = _table.Sheet[row][col].Value;
+            _tableService.ChangeCellWithAllPointers(_table, row, col, expression, dataGridView);
+            dataGridView[col, row].Value = _table.Sheet[row][col].Value;
         }
 
         private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
         {
 
-            var col = dataGridView1.SelectedCells[0].ColumnIndex;
-            var row = dataGridView1.SelectedCells[0].RowIndex;
+            var col = dataGridView.SelectedCells[0].ColumnIndex;
+            var row = dataGridView.SelectedCells[0].RowIndex;
             var expression = "";
             try
             {
@@ -67,42 +67,42 @@ namespace Excel
             {
                 MessageBox.Show("Selected incorrect cell");    
             }
-            textBox1.Text = expression;
-            textBox1.Focus();
+            textBox.Text = expression;
+            textBox.Focus();
         }
 
         private void addRowButton_Click(object sender, EventArgs e)
         {
             DataGridViewRow row = new System.Windows.Forms.DataGridViewRow();
-            if (dataGridView1.Columns.Count == 0)
+            if (dataGridView.Columns.Count == 0)
             {
                 MessageBox.Show("There are no colums");  //???
                 return;
             }
-            dataGridView1.Rows.Add(row);
-            dataGridView1.Rows[_table.RowsAmount].HeaderCell.Value = _table.RowsAmount.ToString();
-            _tableService.AddRow(_table, dataGridView1);
+            dataGridView.Rows.Add(row);
+            dataGridView.Rows[_table.RowsAmount].HeaderCell.Value = _table.RowsAmount.ToString();
+            _tableService.AddRow(_table, dataGridView);
 
         }
         private void addColButton_Click(object sender, EventArgs e)
         {
             string name = ColumnNameConverter.To26System(_table.ColumnsAmount);
-            dataGridView1.Columns.Add(name, name);
+            dataGridView.Columns.Add(name, name);
             _tableService.AddCol(_table);
         }
 
         private void delRowButton_Click(object sender, EventArgs e)
         {
-            if (!_tableService.DeleteRow(_table, dataGridView1))
+            if (!_tableService.DeleteRow(_table, dataGridView))
                 return;
-            dataGridView1.Rows.RemoveAt(_table.RowsAmount);
+            dataGridView.Rows.RemoveAt(_table.RowsAmount);
         }
 
         private void delColButton_Click(object sender, EventArgs e)
         {
-            if (!_tableService.DeleteColumn(_table, dataGridView1))
+            if (!_tableService.DeleteColumn(_table, dataGridView))
                 return;
-            dataGridView1.Columns.RemoveAt(_table.ColumnsAmount);
+            dataGridView.Columns.RemoveAt(_table.ColumnsAmount);
         }
 
         private void saveButton_Click(object sender, EventArgs e)
@@ -131,12 +131,12 @@ namespace Excel
                 return;
             StreamReader sr = new StreamReader(openFileDialog1.FileName);
             _tableService.Clear(_table);
-            dataGridView1.Rows.Clear();
-            dataGridView1.Columns.Clear();
+            dataGridView.Rows.Clear();
+            dataGridView.Columns.Clear();
             int.TryParse(sr.ReadLine(), out var row);
             int.TryParse(sr.ReadLine(), out var column);
             InitializeDataGridView(row, column);
-            _tableService.Open(_table, row, column, sr, dataGridView1);
+            _tableService.Open(_table, row, column, sr, dataGridView);
             sr.Close();
         }
     }

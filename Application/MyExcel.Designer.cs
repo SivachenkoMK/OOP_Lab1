@@ -31,11 +31,11 @@ namespace Excel
         /// </summary>
         private void InitializeComponent()
         {
-            this.panel1 = new Panel();
-            this.dataGridView1 = new DataGridView();
-            this.splitContainer1 = new SplitContainer();
+            this.panel = new Panel();
+            this.dataGridView = new DataGridView();
+            this.splitContainer = new SplitContainer();
             this.calculateButton = new Button();
-            this.textBox1 = new TextBox();
+            this.textBox = new TextBox();
             this.delRowButton = new Button();
             this.addRowButton = new Button();
             this.delColButton = new Button();
@@ -44,60 +44,60 @@ namespace Excel
             this.label1 = new Label();
             this.saveButton = new Button();
             this.openButton = new Button();
-            this.panel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
-            this.splitContainer1.Panel1.SuspendLayout();
-            this.splitContainer1.Panel2.SuspendLayout();
-            this.splitContainer1.SuspendLayout();
+            this.panel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
+            this.splitContainer.Panel1.SuspendLayout();
+            this.splitContainer.Panel2.SuspendLayout();
+            this.splitContainer.SuspendLayout();
             this.SuspendLayout();
             // 
-            // panel1
+            // panel
             // 
-            this.panel1.Anchor = AnchorStyles.Top | AnchorStyles.Left;
-            this.panel1.Controls.Add(this.dataGridView1);
-            this.panel1.Location = new Point(1, 47);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new Size(1136, 595);
-            this.panel1.TabIndex = 1;
+            this.panel.Anchor = AnchorStyles.Top | AnchorStyles.Left;
+            this.panel.Controls.Add(this.dataGridView);
+            this.panel.Location = new Point(1, 47);
+            this.panel.Name = "panel";
+            this.panel.Size = new Size(1136, 595);
+            this.panel.TabIndex = 1;
             // 
-            // dataGridView1
+            // dataGridView
             // 
-            this.dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Dock = DockStyle.Fill;
-            this.dataGridView1.Location = new Point(0, 0);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.RowHeadersWidth = 62;
-            this.dataGridView1.RowTemplate.Height = 33;
-            this.dataGridView1.Size = new Size(1136, 595);
-            this.dataGridView1.TabIndex = 0;
-            this.dataGridView1.CellClick += new DataGridViewCellEventHandler(this.dataGridView1_CellClick);
+            this.dataGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView.Dock = DockStyle.Fill;
+            this.dataGridView.Location = new Point(0, 0);
+            this.dataGridView.Name = "dataGridView";
+            this.dataGridView.RowHeadersWidth = 62;
+            this.dataGridView.RowTemplate.Height = 33;
+            this.dataGridView.Size = new Size(1136, 595);
+            this.dataGridView.TabIndex = 0;
+            this.dataGridView.CellClick += new DataGridViewCellEventHandler(this.dataGridView1_CellClick);
             // 
-            // splitContainer1
+            // splitContainer
             // 
-            this.splitContainer1.Cursor = Cursors.VSplit;
-            this.splitContainer1.FixedPanel = FixedPanel.Panel1;
-            this.splitContainer1.Location = new Point(1, 2);
-            this.splitContainer1.Name = "splitContainer1";
+            this.splitContainer.Cursor = Cursors.VSplit;
+            this.splitContainer.FixedPanel = FixedPanel.Panel1;
+            this.splitContainer.Location = new Point(1, 2);
+            this.splitContainer.Name = "splitContainer";
             // 
-            // splitContainer1.Panel1
+            // splitContainer.Panel1
             // 
-            this.splitContainer1.Panel1.Controls.Add(this.calculateButton);
-            this.splitContainer1.Panel1.Controls.Add(this.textBox1);
+            this.splitContainer.Panel1.Controls.Add(this.calculateButton);
+            this.splitContainer.Panel1.Controls.Add(this.textBox);
             // 
-            // splitContainer1.Panel2
+            // splitContainer.Panel2
             // 
-            this.splitContainer1.Panel2.Controls.Add(this.delRowButton);
-            this.splitContainer1.Panel2.Controls.Add(this.addRowButton);
-            this.splitContainer1.Panel2.Controls.Add(this.delColButton);
-            this.splitContainer1.Panel2.Controls.Add(this.rowLabel);
-            this.splitContainer1.Panel2.Controls.Add(this.addColButton);
-            this.splitContainer1.Panel2.Controls.Add(this.label1);
-            this.splitContainer1.Panel2.Controls.Add(this.saveButton);
-            this.splitContainer1.Panel2.Controls.Add(this.openButton);
-            this.splitContainer1.Size = new Size(1136, 39);
-            this.splitContainer1.SplitterDistance = 488;
-            this.splitContainer1.TabIndex = 2;
+            this.splitContainer.Panel2.Controls.Add(this.delRowButton);
+            this.splitContainer.Panel2.Controls.Add(this.addRowButton);
+            this.splitContainer.Panel2.Controls.Add(this.delColButton);
+            this.splitContainer.Panel2.Controls.Add(this.rowLabel);
+            this.splitContainer.Panel2.Controls.Add(this.addColButton);
+            this.splitContainer.Panel2.Controls.Add(this.label1);
+            this.splitContainer.Panel2.Controls.Add(this.saveButton);
+            this.splitContainer.Panel2.Controls.Add(this.openButton);
+            this.splitContainer.Size = new Size(1136, 39);
+            this.splitContainer.SplitterDistance = 488;
+            this.splitContainer.TabIndex = 2;
             // 
             // calculateButton
             // 
@@ -109,12 +109,12 @@ namespace Excel
             this.calculateButton.UseVisualStyleBackColor = true;
             this.calculateButton.Click += new System.EventHandler(this.calculateButton_Click);
             // 
-            // textBox1
+            // textBox
             // 
-            this.textBox1.Location = new Point(3, 5);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new Size(350, 31);
-            this.textBox1.TabIndex = 0;
+            this.textBox.Location = new Point(3, 5);
+            this.textBox.Name = "textBox";
+            this.textBox.Size = new Size(350, 31);
+            this.textBox.TabIndex = 0;
             // 
             // delRowButton
             // 
@@ -201,29 +201,29 @@ namespace Excel
             this.AutoScaleDimensions = new SizeF(10F, 25F);
             this.AutoScaleMode = AutoScaleMode.Font;
             this.ClientSize = new Size(1136, 642);
-            this.Controls.Add(this.panel1);
-            this.Controls.Add(this.splitContainer1);
+            this.Controls.Add(this.panel);
+            this.Controls.Add(this.splitContainer);
             this.Name = "MyExcel";
             this.Text = "MyExcel";
-            this.panel1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
-            this.splitContainer1.Panel1.ResumeLayout(false);
-            this.splitContainer1.Panel1.PerformLayout();
-            this.splitContainer1.Panel2.ResumeLayout(false);
-            this.splitContainer1.Panel2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
-            this.splitContainer1.ResumeLayout(false);
+            this.panel.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).EndInit();
+            this.splitContainer.Panel1.ResumeLayout(false);
+            this.splitContainer.Panel1.PerformLayout();
+            this.splitContainer.Panel2.ResumeLayout(false);
+            this.splitContainer.Panel2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).EndInit();
+            this.splitContainer.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private Panel panel1;
-        private DataGridView dataGridView1;
-        private SplitContainer splitContainer1;
+        private Panel panel;
+        private DataGridView dataGridView;
+        private SplitContainer splitContainer;
         private Button calculateButton;
-        private TextBox textBox1;
+        private TextBox textBox;
         private Label label1;
         private Button saveButton;
         private Button openButton;
