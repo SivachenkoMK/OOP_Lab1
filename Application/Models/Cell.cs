@@ -7,7 +7,7 @@ namespace Excel.Models
         public int Row { get; set; }
         public int Column { get; set; }
         public string Name { get; set; }
-        public string Expression { get; set; } = string.Empty;
+        public string Expression { get; set; } = "";
         public string Value { get; set; } = "0";
 
         public List<Cell> PointersToThis { get; set; } = new();

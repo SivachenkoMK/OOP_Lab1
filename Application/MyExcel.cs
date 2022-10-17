@@ -15,7 +15,8 @@ namespace Excel
         {
             _tableService = tableService;
             InitializeComponent();
-            InitializeDataGridView(10, 35);
+            // TODO: Move to configs
+            InitializeDataGridView(35, 35);
         }
 
         private void InitializeDataGridView(int rows, int columns)

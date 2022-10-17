@@ -1,4 +1,5 @@
-﻿
+﻿using System.Windows.Forms;
+
 namespace Excel
 {
     partial class MyExcel
@@ -29,19 +30,19 @@ namespace Excel
         /// </summary>
         private void InitializeComponent()
         {
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.calculateButton = new System.Windows.Forms.Button();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.delRowButton = new System.Windows.Forms.Button();
-            this.addRowButton = new System.Windows.Forms.Button();
-            this.delColButton = new System.Windows.Forms.Button();
-            this.rowLabel = new System.Windows.Forms.Label();
-            this.addColButton = new System.Windows.Forms.Button();
-            this.label1 = new System.Windows.Forms.Label();
-            this.saveButton = new System.Windows.Forms.Button();
-            this.openButton = new System.Windows.Forms.Button();
+            this.panel1 = new Panel();
+            this.dataGridView1 = new DataGridView();
+            this.splitContainer1 = new SplitContainer();
+            this.calculateButton = new Button();
+            this.textBox1 = new TextBox();
+            this.delRowButton = new Button();
+            this.addRowButton = new Button();
+            this.delColButton = new Button();
+            this.rowLabel = new Label();
+            this.addColButton = new Button();
+            this.label1 = new Label();
+            this.saveButton = new Button();
+            this.openButton = new Button();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -52,9 +53,7 @@ namespace Excel
             // 
             // panel1
             // 
-            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel1.Anchor = AnchorStyles.Top | AnchorStyles.Left;
             this.panel1.Controls.Add(this.dataGridView1);
             this.panel1.Location = new System.Drawing.Point(1, 47);
             this.panel1.Name = "panel1";
@@ -63,20 +62,20 @@ namespace Excel
             // 
             // dataGridView1
             // 
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView1.Dock = DockStyle.Fill;
             this.dataGridView1.Location = new System.Drawing.Point(0, 0);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowHeadersWidth = 62;
             this.dataGridView1.RowTemplate.Height = 33;
             this.dataGridView1.Size = new System.Drawing.Size(1136, 595);
             this.dataGridView1.TabIndex = 0;
-            this.dataGridView1.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellClick);
+            this.dataGridView1.CellClick += new DataGridViewCellEventHandler(this.dataGridView1_CellClick);
             // 
             // splitContainer1
             // 
-            this.splitContainer1.Cursor = System.Windows.Forms.Cursors.VSplit;
-            this.splitContainer1.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
+            this.splitContainer1.Cursor = Cursors.VSplit;
+            this.splitContainer1.FixedPanel = FixedPanel.Panel1;
             this.splitContainer1.Location = new System.Drawing.Point(1, 2);
             this.splitContainer1.Name = "splitContainer1";
             // 
@@ -199,7 +198,7 @@ namespace Excel
             // MyExcel
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 25F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleMode = AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1136, 642);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.splitContainer1);
@@ -219,19 +218,19 @@ namespace Excel
 
         #endregion
 
-        private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.DataGridView dataGridView1;
-        private System.Windows.Forms.SplitContainer splitContainer1;
-        private System.Windows.Forms.Button calculateButton;
-        private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Button saveButton;
-        private System.Windows.Forms.Button openButton;
-        private System.Windows.Forms.Button addColButton;
-        private System.Windows.Forms.Button delRowButton;
-        private System.Windows.Forms.Button addRowButton;
-        private System.Windows.Forms.Button delColButton;
-        private System.Windows.Forms.Label rowLabel;
+        private Panel panel1;
+        private DataGridView dataGridView1;
+        private SplitContainer splitContainer1;
+        private Button calculateButton;
+        private TextBox textBox1;
+        private Label label1;
+        private Button saveButton;
+        private Button openButton;
+        private Button addColButton;
+        private Button delRowButton;
+        private Button addRowButton;
+        private Button delColButton;
+        private Label rowLabel;
     }
 }
 

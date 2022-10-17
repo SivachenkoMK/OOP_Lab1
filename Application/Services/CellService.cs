@@ -8,8 +8,6 @@ namespace Excel.Services
     {
         public void UpdateCellData(Cell cell, string expression, string value, List<Cell> references, List<Cell> pointers)
         {
-            cell.Value = value;
-            cell.Expression = expression;
             cell.ReferencesFromThis.Clear();
             cell.ReferencesFromThis.AddRange(references);
             cell.PointersToThis.Clear();

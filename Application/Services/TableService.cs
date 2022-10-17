@@ -18,10 +18,7 @@ namespace Excel.Services
         {
             _cellService = cellService;
         }
-
-        // TODO: Move to configs
-        private const int DefaultAmountOfColumns = 35;
-        private const int DefaultAmountOfRows = 10;
+        
         public Table CreateTable(int columnsAmount, int rowsAmount)
         {
             var table = new Table(columnsAmount, rowsAmount);
