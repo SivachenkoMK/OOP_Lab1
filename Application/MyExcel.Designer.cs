@@ -31,19 +31,19 @@ namespace Excel
         /// </summary>
         private void InitializeComponent()
         {
-            this.panel = new Panel();
-            this.dataGridView = new DataGridView();
-            this.splitContainer = new SplitContainer();
-            this.calculateButton = new Button();
-            this.textBox = new TextBox();
-            this.delRowButton = new Button();
-            this.addRowButton = new Button();
-            this.delColButton = new Button();
-            this.rowLabel = new Label();
-            this.addColButton = new Button();
-            this.label1 = new Label();
-            this.saveButton = new Button();
-            this.openButton = new Button();
+            this.panel = new System.Windows.Forms.Panel();
+            this.dataGridView = new System.Windows.Forms.DataGridView();
+            this.splitContainer = new System.Windows.Forms.SplitContainer();
+            this.calculateButton = new System.Windows.Forms.Button();
+            this.textBox = new System.Windows.Forms.TextBox();
+            this.delRowButton = new System.Windows.Forms.Button();
+            this.addRowButton = new System.Windows.Forms.Button();
+            this.delColButton = new System.Windows.Forms.Button();
+            this.rowLabel = new System.Windows.Forms.Label();
+            this.addColButton = new System.Windows.Forms.Button();
+            this.label = new System.Windows.Forms.Label();
+            this.saveButton = new System.Windows.Forms.Button();
+            this.openButton = new System.Windows.Forms.Button();
             this.panel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
@@ -54,30 +54,32 @@ namespace Excel
             // 
             // panel
             // 
-            this.panel.Anchor = AnchorStyles.Top | AnchorStyles.Left;
             this.panel.Controls.Add(this.dataGridView);
-            this.panel.Location = new Point(1, 47);
+            this.panel.Location = new System.Drawing.Point(1, 44);
+            this.panel.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.panel.Name = "panel";
-            this.panel.Size = new Size(1136, 595);
+            this.panel.Size = new System.Drawing.Size(1920, 964);
             this.panel.TabIndex = 1;
             // 
             // dataGridView
             // 
-            this.dataGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView.Dock = DockStyle.Fill;
-            this.dataGridView.Location = new Point(0, 0);
+            this.dataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dataGridView.Location = new System.Drawing.Point(0, 0);
+            this.dataGridView.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.dataGridView.Name = "dataGridView";
-            this.dataGridView.RowHeadersWidth = 62;
-            this.dataGridView.RowTemplate.Height = 33;
-            this.dataGridView.Size = new Size(1136, 595);
+            this.dataGridView.RowHeadersWidth = 60;
+            this.dataGridView.RowTemplate.Height = 30;
+            this.dataGridView.Size = new System.Drawing.Size(1920, 964);
             this.dataGridView.TabIndex = 0;
-            this.dataGridView.CellClick += new DataGridViewCellEventHandler(this.dataGridView1_CellClick);
+            this.dataGridView.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellClick);
             // 
             // splitContainer
             // 
-            this.splitContainer.Cursor = Cursors.VSplit;
-            this.splitContainer.FixedPanel = FixedPanel.Panel1;
-            this.splitContainer.Location = new Point(1, 2);
+            this.splitContainer.Cursor = System.Windows.Forms.Cursors.VSplit;
+            this.splitContainer.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
+            this.splitContainer.Location = new System.Drawing.Point(1, 2);
+            this.splitContainer.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.splitContainer.Name = "splitContainer";
             // 
             // splitContainer.Panel1
@@ -92,46 +94,51 @@ namespace Excel
             this.splitContainer.Panel2.Controls.Add(this.delColButton);
             this.splitContainer.Panel2.Controls.Add(this.rowLabel);
             this.splitContainer.Panel2.Controls.Add(this.addColButton);
-            this.splitContainer.Panel2.Controls.Add(this.label1);
+            this.splitContainer.Panel2.Controls.Add(this.label);
             this.splitContainer.Panel2.Controls.Add(this.saveButton);
             this.splitContainer.Panel2.Controls.Add(this.openButton);
-            this.splitContainer.Size = new Size(1136, 39);
+            this.splitContainer.Size = new System.Drawing.Size(1920, 80);
             this.splitContainer.SplitterDistance = 488;
+            this.splitContainer.SplitterWidth = 3;
             this.splitContainer.TabIndex = 2;
             // 
             // calculateButton
             // 
-            this.calculateButton.Location = new Point(359, 4);
+            this.calculateButton.Location = new System.Drawing.Point(287, 3);
+            this.calculateButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.calculateButton.Name = "calculateButton";
-            this.calculateButton.Size = new Size(126, 34);
+            this.calculateButton.Size = new System.Drawing.Size(104, 32);
             this.calculateButton.TabIndex = 1;
-            this.calculateButton.Text = "Calculate";
+            this.calculateButton.Text = "Evaluate";
             this.calculateButton.UseVisualStyleBackColor = true;
             this.calculateButton.Click += new System.EventHandler(this.calculateButton_Click);
             // 
             // textBox
             // 
-            this.textBox.Location = new Point(3, 5);
+            this.textBox.Location = new System.Drawing.Point(2, 4);
+            this.textBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.textBox.Name = "textBox";
-            this.textBox.Size = new Size(350, 31);
+            this.textBox.Size = new System.Drawing.Size(281, 27);
             this.textBox.TabIndex = 0;
             // 
             // delRowButton
             // 
-            this.delRowButton.Location = new Point(309, 5);
+            this.delRowButton.Location = new System.Drawing.Point(249, 4);
+            this.delRowButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.delRowButton.Name = "delRowButton";
-            this.delRowButton.Size = new Size(30, 32);
+            this.delRowButton.Size = new System.Drawing.Size(32, 32);
             this.delRowButton.TabIndex = 7;
             this.delRowButton.Text = "-";
-            this.delRowButton.TextAlign = ContentAlignment.TopCenter;
+            this.delRowButton.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             this.delRowButton.UseVisualStyleBackColor = true;
             this.delRowButton.Click += new System.EventHandler(this.delRowButton_Click);
             // 
             // addRowButton
             // 
-            this.addRowButton.Location = new Point(273, 5);
+            this.addRowButton.Location = new System.Drawing.Point(218, 4);
+            this.addRowButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.addRowButton.Name = "addRowButton";
-            this.addRowButton.Size = new Size(30, 32);
+            this.addRowButton.Size = new System.Drawing.Size(32, 32);
             this.addRowButton.TabIndex = 6;
             this.addRowButton.Text = "+";
             this.addRowButton.UseVisualStyleBackColor = true;
@@ -139,48 +146,53 @@ namespace Excel
             // 
             // delColButton
             // 
-            this.delColButton.Location = new Point(140, 4);
+            this.delColButton.Location = new System.Drawing.Point(114, 3);
+            this.delColButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.delColButton.Name = "delColButton";
-            this.delColButton.Size = new Size(30, 32);
+            this.delColButton.Size = new System.Drawing.Size(32, 32);
             this.delColButton.TabIndex = 5;
             this.delColButton.Text = "-";
-            this.delColButton.TextAlign = ContentAlignment.TopCenter;
+            this.delColButton.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             this.delColButton.UseVisualStyleBackColor = true;
             this.delColButton.Click += new System.EventHandler(this.delColButton_Click);
             // 
             // rowLabel
             // 
             this.rowLabel.AutoSize = true;
-            this.rowLabel.Location = new Point(213, 9);
+            this.rowLabel.Location = new System.Drawing.Point(170, 7);
+            this.rowLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.rowLabel.Name = "rowLabel";
-            this.rowLabel.Size = new Size(54, 25);
+            this.rowLabel.Size = new System.Drawing.Size(47, 20);
             this.rowLabel.TabIndex = 4;
-            this.rowLabel.Text = "Rows";
+            this.rowLabel.Text = "Rows:";
             // 
             // addColButton
             // 
-            this.addColButton.Location = new Point(104, 4);
+            this.addColButton.Location = new System.Drawing.Point(83, 3);
+            this.addColButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.addColButton.Name = "addColButton";
-            this.addColButton.Size = new Size(30, 32);
+            this.addColButton.Size = new System.Drawing.Size(32, 32);
             this.addColButton.TabIndex = 3;
             this.addColButton.Text = "+";
             this.addColButton.UseVisualStyleBackColor = true;
             this.addColButton.Click += new System.EventHandler(this.addColButton_Click);
             // 
-            // label1
+            // label
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new Point(16, 7);
-            this.label1.Name = "label1";
-            this.label1.Size = new Size(82, 25);
-            this.label1.TabIndex = 2;
-            this.label1.Text = "Columns";
+            this.label.AutoSize = true;
+            this.label.Location = new System.Drawing.Point(13, 6);
+            this.label.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label.Name = "label";
+            this.label.Size = new System.Drawing.Size(69, 20);
+            this.label.TabIndex = 2;
+            this.label.Text = "Columns:";
             // 
             // saveButton
             // 
-            this.saveButton.Location = new Point(545, 3);
+            this.saveButton.Location = new System.Drawing.Point(436, 2);
+            this.saveButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.saveButton.Name = "saveButton";
-            this.saveButton.Size = new Size(96, 34);
+            this.saveButton.Size = new System.Drawing.Size(80, 32);
             this.saveButton.TabIndex = 1;
             this.saveButton.Text = "Save";
             this.saveButton.UseVisualStyleBackColor = true;
@@ -188,9 +200,10 @@ namespace Excel
             // 
             // openButton
             // 
-            this.openButton.Location = new Point(431, 3);
+            this.openButton.Location = new System.Drawing.Point(345, 2);
+            this.openButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.openButton.Name = "openButton";
-            this.openButton.Size = new Size(97, 34);
+            this.openButton.Size = new System.Drawing.Size(80, 32);
             this.openButton.TabIndex = 0;
             this.openButton.Text = "Open";
             this.openButton.UseVisualStyleBackColor = true;
@@ -198,11 +211,12 @@ namespace Excel
             // 
             // MyExcel
             // 
-            this.AutoScaleDimensions = new SizeF(10F, 25F);
-            this.AutoScaleMode = AutoScaleMode.Font;
-            this.ClientSize = new Size(1136, 642);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.ClientSize = new System.Drawing.Size(1539, 514);
             this.Controls.Add(this.panel);
             this.Controls.Add(this.splitContainer);
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.Name = "MyExcel";
             this.Text = "MyExcel";
             this.panel.ResumeLayout(false);
@@ -224,7 +238,7 @@ namespace Excel
         private SplitContainer splitContainer;
         private Button calculateButton;
         private TextBox textBox;
-        private Label label1;
+        private Label label;
         private Button saveButton;
         private Button openButton;
         private Button addColButton;
