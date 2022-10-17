@@ -9,8 +9,6 @@ namespace Excel
 {
     public static class Program
     {
-        private static IServiceProvider ServiceProvider { get; set; }
-
         /// <summary>
         ///  The main entry point for the application.
         /// </summary>
@@ -22,9 +20,8 @@ namespace Excel
             Application.SetCompatibleTextRenderingDefault(false);
             
             var host = CreateHostBuilder().Build();
-            ServiceProvider = host.Services;
 
-            Application.Run(ServiceProvider.GetRequiredService<MyExcel>());
+            Application.Run(host.Services.GetRequiredService<MyExcel>());
         }
 
         private static IHostBuilder CreateHostBuilder()
