@@ -21,8 +21,8 @@ namespace Excel
 
         public static Tuple<int, int> Decode(string input) //change occur 1AA еtc
         {
-            int col = 0;
-            int row = 0;
+            var col = 0;
+            var row = 0;
             foreach (var symbol in input)
             {
                 switch (symbol)
