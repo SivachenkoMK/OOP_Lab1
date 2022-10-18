@@ -49,11 +49,11 @@ namespace Excel.Services
             table.ColumnsAmount = 0;
         }
 
-        private string Calculate(string expression)
+        private string GetValue(string expression)
         {
             try
             {
-                var res = Calculator.Evaluate(expression).ToString();
+                var res = Evaluator.GetValue(expression).ToString();
                 if (res == "∞")
                     res = "Division by zero error";
                 return res;
@@ -77,7 +77,7 @@ namespace Excel.Services
                 if (expression[0] != '=') //expression not formula
                 {
                     currentCell.Value = expression;
-                    _dictionary[FullName(row, col)] = expression;
+                    _dictionary[GetFullName(row, col)] = expression;
                     foreach (var cell in currentCell.PointersToThis)
                     {
                         RefreshCellAndPointers(table, cell, dataGridView1);
@@ -102,7 +102,7 @@ namespace Excel.Services
 
             //new_references without loops
             _cellService.AddPointersAndReferences(currentCell);
-            string val = Calculate(newExpression); //calculate ready expression
+            string val = GetValue(newExpression); //calculate ready expression
 
             if (val == "Error") //cannot calculate
             {
@@ -114,13 +114,13 @@ namespace Excel.Services
             }
 
             currentCell.Value = val;
-            _dictionary[FullName(row, col)] = val;
+            _dictionary[GetFullName(row, col)] = val;
             foreach (var cell in currentCell.PointersToThis) //refresh all cells which has formula with currCell
                 RefreshCellAndPointers(table, cell, dataGridView1);
 
         }
 
-        private string FullName(int row, int col)
+        private string GetFullName(int row, int col)
         {
             var cell = new Cell(row, col);
             return cell.Name;
@@ -132,7 +132,7 @@ namespace Excel.Services
             var newExpression =
                 ConvertReferences(table, cell.Row, cell.Column, cell.Expression); //expression without Cell Names
             newExpression = newExpression.Remove(0, 1); //remove '='
-            var value = Calculate(newExpression); //calculate ready expression
+            var value = GetValue(newExpression); //calculate ready expression
 
             if (value == "Error")
             {
@@ -144,7 +144,7 @@ namespace Excel.Services
             }
 
             table.Sheet[cell.Row][cell.Column].Value = value;
-            _dictionary[FullName(cell.Row, cell.Column)] = value;
+            _dictionary[GetFullName(cell.Row, cell.Column)] = value;
             dataGridView1[cell.Column, cell.Row].Value = value;
 
             return cell.PointersToThis.All(point => RefreshCellAndPointers(table, point, dataGridView1));
@@ -178,7 +178,7 @@ namespace Excel.Services
             {
                 if (_dictionary.ContainsKey(match.Value)) //addReference
                 {
-                    var nums = ColumnNameConverter.From26System(match.Value);
+                    var nums = ColumnNameEncoder.Decode(match.Value);
                     table.Sheet[row][col].NewReferencesFromThis.Add(table.Sheet[nums.Item1][nums.Item2]);
                 }
             }
@@ -230,7 +230,7 @@ namespace Excel.Services
             var curCount = table.RowsAmount - 1;
             for (var i = 0; i < table.ColumnsAmount; i++)
             {
-                var name = FullName(curCount, i);
+                var name = GetFullName(curCount, i);
                 if (_dictionary[name] != "0" && _dictionary[name] != "" && _dictionary[name] != " ")
                     notEmptyCells.Add(table.Sheet[curCount][i]);
                 if (table.Sheet[curCount][i].PointersToThis.Count != 0) //select cells that points to deleted cell
@@ -262,7 +262,7 @@ namespace Excel.Services
 
             for (var i = 0; i < table.ColumnsAmount; i++)
             {
-                var name = FullName(curCount, i);
+                var name = GetFullName(curCount, i);
                 _dictionary.Remove(name);
             }
 
@@ -293,7 +293,7 @@ namespace Excel.Services
             var curCount = table.ColumnsAmount - 1;
             for (var i = 0; i < table.RowsAmount; i++)
             {
-                var name = FullName(i, curCount);
+                var name = GetFullName(i, curCount);
                 if (_dictionary[name] != "0" && _dictionary[name] != "" && _dictionary[name] != " ")
                     notEmptyCells.Add(table.Sheet[i][curCount]);
                 if (table.Sheet[i][curCount].PointersToThis.Count != 0) //select cells that points to deleted cell
@@ -325,7 +325,7 @@ namespace Excel.Services
 
             for (var i = 0; i < table.RowsAmount; i++)
             {
-                var name = FullName(i, curCount);
+                var name = GetFullName(i, curCount);
                 _dictionary.Remove(name);
             }
 
@@ -397,8 +397,8 @@ namespace Excel.Services
                     for (var k = 0; k < refCount; k++)
                     {
                         var refer = sr.ReadLine();
-                        var curRow = ColumnNameConverter.From26System(refer).Item1;
-                        var curCol = ColumnNameConverter.From26System(refer).Item2;
+                        var curRow = ColumnNameEncoder.Decode(refer).Item1;
+                        var curCol = ColumnNameEncoder.Decode(refer).Item2;
 
                         if (curRow < table.RowsAmount && curCol < table.ColumnsAmount)
                             newRef.Add(table.Sheet[curRow][curCol]);
@@ -409,8 +409,8 @@ namespace Excel.Services
                     for (var k = 0; k < pointCount; k++)
                     {
                         var point = sr.ReadLine();
-                        var curRow = ColumnNameConverter.From26System(point).Item1;
-                        var curCol = ColumnNameConverter.From26System(point).Item2;
+                        var curRow = ColumnNameEncoder.Decode(point).Item1;
+                        var curCol = ColumnNameEncoder.Decode(point).Item2;
                         newPoint.Add(table.Sheet[curRow][curCol]);
                     }
 

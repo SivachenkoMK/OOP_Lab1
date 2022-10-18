@@ -9,29 +9,29 @@ namespace UnitTests
         [TestMethod]
         public void EvaluateTestUnaryMinus()
         {
-            Assert.AreEqual(Calculator.Evaluate("-5"), -5);
-            Assert.AreEqual(Calculator.Evaluate("--5"), 5);
-            Assert.AreEqual(Calculator.Evaluate("---5"), -5);
-            Assert.AreEqual(Calculator.Evaluate("5+-5"), 0);
-            Assert.AreEqual(Calculator.Evaluate("5+--5"), 10);
+            Assert.AreEqual(Evaluator.GetValue("-5"), -5);
+            Assert.AreEqual(Evaluator.GetValue("--5"), 5);
+            Assert.AreEqual(Evaluator.GetValue("---5"), -5);
+            Assert.AreEqual(Evaluator.GetValue("5+-5"), 0);
+            Assert.AreEqual(Evaluator.GetValue("5+--5"), 10);
         }
 
         [TestMethod]
         public void EvaluateTestPow()
         {
-            Assert.AreEqual(Calculator.Evaluate("2^3"),8);
-            Assert.AreEqual(Calculator.Evaluate("2^2^2"),16);
-            Assert.AreEqual(Calculator.Evaluate("2^(2^2)"), 16);
-            Assert.AreEqual(Calculator.Evaluate("3^2^(2+2)"), 6561);
+            Assert.AreEqual(Evaluator.GetValue("2^3"),8);
+            Assert.AreEqual(Evaluator.GetValue("2^2^2"),16);
+            Assert.AreEqual(Evaluator.GetValue("2^(2^2)"), 16);
+            Assert.AreEqual(Evaluator.GetValue("3^2^(2+2)"), 6561);
         }
         
         [TestMethod]
         public void EvaluateTestIncDec()
         {
-            Assert.AreEqual(Calculator.Evaluate("inc(5)"), 6);
-            Assert.AreEqual(Calculator.Evaluate("dec(6)"), 5);
-            Assert.AreEqual(Calculator.Evaluate("inc(dec(5))"), 5);
-            Assert.AreEqual(Calculator.Evaluate("dec(inc(5))"), 5);
+            Assert.AreEqual(Evaluator.GetValue("inc(5)"), 6);
+            Assert.AreEqual(Evaluator.GetValue("dec(6)"), 5);
+            Assert.AreEqual(Evaluator.GetValue("inc(dec(5))"), 5);
+            Assert.AreEqual(Evaluator.GetValue("dec(inc(5))"), 5);
         }
     }
 }

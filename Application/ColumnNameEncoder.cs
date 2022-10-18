@@ -3,9 +3,9 @@
 namespace Excel
 {
 
-    public static class ColumnNameConverter
+    public static class ColumnNameEncoder
     {
-        public static string To26System(int x)
+        public static string Encode(int x)
         {
             x++;
             var columnName = "";
@@ -13,13 +13,13 @@ namespace Excel
             while (x > 0)
             {
                 var mod = (x - 1) % 26;
-                columnName = ((char)(65 + mod)) + columnName;
+                columnName = (char)(65 + mod) + columnName;
                 x = (x - mod) / 26;
             }
             return columnName;
         }
 
-        public static Tuple<int, int> From26System(string input) //change occur 1AA еtc
+        public static Tuple<int, int> Decode(string input) //change occur 1AA еtc
         {
             int col = 0;
             int row = 0;

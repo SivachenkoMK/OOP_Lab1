@@ -2,9 +2,9 @@
 
 namespace Excel
 {
-    public static class Calculator
+    public static class Evaluator
     {
-        public static double Evaluate(string expression)
+        public static double GetValue(string expression)
         {
             var lexer = new LabCalculatorLexer(new AntlrInputStream(expression));
             lexer.RemoveErrorListeners();
@@ -15,7 +15,7 @@ namespace Excel
 
             var tree = parser.compileUnit();
 
-            var visitor = new LabCalculatorVisitor();
+            var visitor = new CalculatorVisitor();
 
             return visitor.Visit(tree);
         }

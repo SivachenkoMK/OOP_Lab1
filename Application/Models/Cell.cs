@@ -19,7 +19,7 @@ namespace Excel.Models
         {
             Row = row;
             Column = column;
-            Name = ColumnNameConverter.To26System(column) + row;
+            Name = ColumnNameEncoder.Encode(column) + row;
         }
     }
 }

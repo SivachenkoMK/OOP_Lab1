@@ -26,7 +26,7 @@ namespace Excel
             dataGridView.ColumnCount = columns;
             for (var i = 0; i < columns; i++)
             {
-                var columnName = ColumnNameConverter.To26System(i);
+                var columnName = ColumnNameEncoder.Encode(i);
                 dataGridView.Columns[i].Name = columnName;
                 dataGridView.Columns[i].SortMode = DataGridViewColumnSortMode.NotSortable;
             }
@@ -86,7 +86,7 @@ namespace Excel
         }
         private void addColButton_Click(object sender, EventArgs e)
         {
-            string name = ColumnNameConverter.To26System(_table.ColumnsAmount);
+            string name = ColumnNameEncoder.Encode(_table.ColumnsAmount);
             dataGridView.Columns.Add(name, name);
             _tableService.AddCol(_table);
         }
