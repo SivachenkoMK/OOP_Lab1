@@ -1,14 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 
 namespace Excel
 {
     public class CalculatorVisitor : LabCalculatorBaseVisitor<double>
     {
-        //таблиця ідентифікаторів (тут для прикладу)
-        //TODO: в лабораторній роботі заміните на свою!!!!
-        private readonly Dictionary<string, double> _tableIdentifier = new();
-
         public override double VisitCompileUnit(LabCalculatorParser.CompileUnitContext context)
         {
             return Visit(context.expression());
@@ -22,13 +17,6 @@ namespace Excel
             return result;
         }
 
-        //IdentifierExpr
-        public override double VisitIdentifierExpr(LabCalculatorParser.IdentifierExprContext context)
-        {
-            var result = context.GetText();
-            //TODO: видобути значення змінної з таблиці
-            return _tableIdentifier.TryGetValue(result, out var value) ? value : 0.0;
-        }
         public override double VisitUnaryMinusExpr(LabCalculatorParser.UnaryMinusExprContext context)
         {
             var left = WalkLeft(context);

@@ -58,7 +58,7 @@ namespace Excel
             this.panel.Location = new System.Drawing.Point(1, 44);
             this.panel.Margin = new System.Windows.Forms.Padding(2);
             this.panel.Name = "panel";
-            this.panel.Size = new System.Drawing.Size(1920, 964);
+            this.panel.Size = new System.Drawing.Size(1905, 955);
             this.panel.TabIndex = 1;
             // 
             // dataGridView
@@ -70,7 +70,7 @@ namespace Excel
             this.dataGridView.Name = "dataGridView";
             this.dataGridView.RowHeadersWidth = 60;
             this.dataGridView.RowTemplate.Height = 30;
-            this.dataGridView.Size = new System.Drawing.Size(1920, 964);
+            this.dataGridView.Size = new System.Drawing.Size(1905, 964);
             this.dataGridView.TabIndex = 0;
             this.dataGridView.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellClick);
             // 
