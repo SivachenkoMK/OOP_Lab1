@@ -3,7 +3,7 @@ using System.Diagnostics;
 
 namespace Excel
 {
-    public class CalculatorVisitor : LabCalculatorBaseVisitor<double>
+    public class CalculatorVisitor : CalculatorBaseVisitor<double>
     {
         //таблиця ідентифікаторів (тут для прикладу)
         //TODO: в лабораторній роботі заміните на свою!!!!
