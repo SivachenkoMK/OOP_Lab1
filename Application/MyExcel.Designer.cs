@@ -36,6 +36,7 @@ namespace Application
             this.splitContainer = new System.Windows.Forms.SplitContainer();
             this.calculateButton = new System.Windows.Forms.Button();
             this.textBox = new System.Windows.Forms.TextBox();
+            this.Information = new System.Windows.Forms.Button();
             this.delRowButton = new System.Windows.Forms.Button();
             this.addRowButton = new System.Windows.Forms.Button();
             this.delColButton = new System.Windows.Forms.Button();
@@ -70,7 +71,7 @@ namespace Application
             this.dataGridView.Name = "dataGridView";
             this.dataGridView.RowHeadersWidth = 60;
             this.dataGridView.RowTemplate.Height = 30;
-            this.dataGridView.Size = new System.Drawing.Size(1905, 964);
+            this.dataGridView.Size = new System.Drawing.Size(1905, 955);
             this.dataGridView.TabIndex = 0;
             this.dataGridView.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellClick);
             // 
@@ -84,11 +85,14 @@ namespace Application
             // 
             // splitContainer.Panel1
             // 
+            this.splitContainer.Panel1.BackColor = System.Drawing.SystemColors.GradientActiveCaption;
             this.splitContainer.Panel1.Controls.Add(this.calculateButton);
             this.splitContainer.Panel1.Controls.Add(this.textBox);
             // 
             // splitContainer.Panel2
             // 
+            this.splitContainer.Panel2.BackColor = System.Drawing.SystemColors.GradientActiveCaption;
+            this.splitContainer.Panel2.Controls.Add(this.Information);
             this.splitContainer.Panel2.Controls.Add(this.delRowButton);
             this.splitContainer.Panel2.Controls.Add(this.addRowButton);
             this.splitContainer.Panel2.Controls.Add(this.delColButton);
@@ -104,6 +108,7 @@ namespace Application
             // 
             // calculateButton
             // 
+            this.calculateButton.BackColor = System.Drawing.SystemColors.InactiveCaption;
             this.calculateButton.Location = new System.Drawing.Point(287, 4);
             this.calculateButton.Margin = new System.Windows.Forms.Padding(2);
             this.calculateButton.Name = "calculateButton";
@@ -115,14 +120,27 @@ namespace Application
             // 
             // textBox
             // 
+            this.textBox.BackColor = System.Drawing.SystemColors.ButtonFace;
             this.textBox.Location = new System.Drawing.Point(3, 5);
             this.textBox.Margin = new System.Windows.Forms.Padding(2);
             this.textBox.Name = "textBox";
             this.textBox.Size = new System.Drawing.Size(281, 27);
             this.textBox.TabIndex = 0;
             // 
+            // Information
+            // 
+            this.Information.BackColor = System.Drawing.SystemColors.Info;
+            this.Information.Location = new System.Drawing.Point(626, 3);
+            this.Information.Name = "Information";
+            this.Information.Size = new System.Drawing.Size(401, 31);
+            this.Information.TabIndex = 8;
+            this.Information.Text = _defaultConfiguration.UsefulInformation;
+            this.Information.UseVisualStyleBackColor = false;
+            this.Information.Click += new System.EventHandler(this.informationButton_Click);
+            // 
             // delRowButton
             // 
+            this.delRowButton.BackColor = System.Drawing.SystemColors.InactiveCaption;
             this.delRowButton.Location = new System.Drawing.Point(249, 4);
             this.delRowButton.Margin = new System.Windows.Forms.Padding(2);
             this.delRowButton.Name = "delRowButton";
@@ -130,22 +148,24 @@ namespace Application
             this.delRowButton.TabIndex = 7;
             this.delRowButton.Text = "-";
             this.delRowButton.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.delRowButton.UseVisualStyleBackColor = true;
+            this.delRowButton.UseVisualStyleBackColor = false;
             this.delRowButton.Click += new System.EventHandler(this.delRowButton_Click);
             // 
             // addRowButton
             // 
+            this.addRowButton.BackColor = System.Drawing.SystemColors.InactiveCaption;
             this.addRowButton.Location = new System.Drawing.Point(218, 4);
             this.addRowButton.Margin = new System.Windows.Forms.Padding(2);
             this.addRowButton.Name = "addRowButton";
             this.addRowButton.Size = new System.Drawing.Size(32, 32);
             this.addRowButton.TabIndex = 6;
             this.addRowButton.Text = "+";
-            this.addRowButton.UseVisualStyleBackColor = true;
+            this.addRowButton.UseVisualStyleBackColor = false;
             this.addRowButton.Click += new System.EventHandler(this.addRowButton_Click);
             // 
             // delColButton
             // 
+            this.delColButton.BackColor = System.Drawing.SystemColors.InactiveCaption;
             this.delColButton.Location = new System.Drawing.Point(114, 3);
             this.delColButton.Margin = new System.Windows.Forms.Padding(2);
             this.delColButton.Name = "delColButton";
@@ -153,7 +173,7 @@ namespace Application
             this.delColButton.TabIndex = 5;
             this.delColButton.Text = "-";
             this.delColButton.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.delColButton.UseVisualStyleBackColor = true;
+            this.delColButton.UseVisualStyleBackColor = false;
             this.delColButton.Click += new System.EventHandler(this.delColButton_Click);
             // 
             // rowLabel
@@ -162,19 +182,20 @@ namespace Application
             this.rowLabel.Location = new System.Drawing.Point(168, 9);
             this.rowLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.rowLabel.Name = "rowLabel";
-            this.rowLabel.Size = new System.Drawing.Size(47, 20);
+            this.rowLabel.Size = new System.Drawing.Size(0, 20);
             this.rowLabel.TabIndex = 4;
             this.rowLabel.Text = _defaultConfiguration.Rows;
             // 
             // addColButton
             // 
+            this.addColButton.BackColor = System.Drawing.SystemColors.InactiveCaption;
             this.addColButton.Location = new System.Drawing.Point(83, 3);
             this.addColButton.Margin = new System.Windows.Forms.Padding(2);
             this.addColButton.Name = "addColButton";
             this.addColButton.Size = new System.Drawing.Size(32, 32);
             this.addColButton.TabIndex = 3;
             this.addColButton.Text = "+";
-            this.addColButton.UseVisualStyleBackColor = true;
+            this.addColButton.UseVisualStyleBackColor = false;
             this.addColButton.Click += new System.EventHandler(this.addColButton_Click);
             // 
             // label
@@ -183,12 +204,13 @@ namespace Application
             this.label.Location = new System.Drawing.Point(10, 9);
             this.label.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label.Name = "label";
-            this.label.Size = new System.Drawing.Size(69, 20);
+            this.label.Size = new System.Drawing.Size(0, 20);
             this.label.TabIndex = 2;
             this.label.Text = _defaultConfiguration.Columns;
             // 
             // saveButton
             // 
+            this.saveButton.BackColor = System.Drawing.SystemColors.InactiveCaption;
             this.saveButton.Location = new System.Drawing.Point(436, 2);
             this.saveButton.Margin = new System.Windows.Forms.Padding(2);
             this.saveButton.Name = "saveButton";
@@ -200,6 +222,7 @@ namespace Application
             // 
             // openButton
             // 
+            this.openButton.BackColor = System.Drawing.SystemColors.InactiveCaption;
             this.openButton.Location = new System.Drawing.Point(345, 2);
             this.openButton.Margin = new System.Windows.Forms.Padding(2);
             this.openButton.Name = "openButton";
@@ -213,6 +236,7 @@ namespace Application
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.SystemColors.GradientActiveCaption;
             this.ClientSize = new System.Drawing.Size(1539, 514);
             this.Controls.Add(this.panel);
             this.Controls.Add(this.splitContainer);
@@ -246,6 +270,7 @@ namespace Application
         private Button addRowButton;
         private Button delColButton;
         private Label rowLabel;
+        private Button Information;
     }
 }
 

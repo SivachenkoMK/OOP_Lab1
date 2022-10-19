@@ -10,5 +10,9 @@
         public string Save { get; set; } = default!;
         public string Open { get; set; } = default!;
         public string ApplicationName { get; set; } = default!;
+        public string Information { get; set; } = default!;
+        public string SelectedIncorrectCell { get; set; } = default!;
+        public string NoColumns { get; set; } = default!;
+        public string UsefulInformation { get; set; } = default!;
     }
 }

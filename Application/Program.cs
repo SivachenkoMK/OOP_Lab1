@@ -12,7 +12,7 @@ namespace Application
 {
     public static class Program
     {
-        private static IConfiguration _configuration;
+        private static IConfiguration? _configuration;
         private const string EnvVariableName = "ASPNETCORE_ENVIRONMENT";
 
         /// <summary>
@@ -45,11 +45,11 @@ namespace Application
         private static IHostBuilder CreateHostBuilder()
         {
             return Host.CreateDefaultBuilder()
-                .ConfigureServices((context, services)=>{
+                .ConfigureServices((_, services)=>{
                     services.AddTransient<ICellService, CellService>();
                     services.AddTransient<ITableService, TableService>();
                     services.AddTransient<MyExcel>();
-                    services.Configure<ErrorMessages>(_configuration.GetSection(nameof(ErrorMessages)));
+                    services.Configure<ErrorMessages>(_configuration!.GetSection(nameof(ErrorMessages)));
                     services.Configure<FileManagementOptions>(_configuration.GetSection(nameof(FileManagementOptions)));
                     services.Configure<DefaultConfiguration>(_configuration.GetSection(nameof(DefaultConfiguration)));
                 });

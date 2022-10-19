@@ -75,7 +75,7 @@ namespace Application
             }
             catch 
             {
-                MessageBox.Show("Selected incorrect cell");    
+                MessageBox.Show(_defaultConfiguration.SelectedIncorrectCell);    
             }
             textBox.Text = expression;
             textBox.Focus();
@@ -86,7 +86,7 @@ namespace Application
             DataGridViewRow row = new DataGridViewRow();
             if (dataGridView.Columns.Count == 0)
             {
-                MessageBox.Show("There are no colums");  //???
+                MessageBox.Show(_defaultConfiguration.NoColumns);  
                 return;
             }
             dataGridView.Rows.Add(row);
@@ -150,6 +150,11 @@ namespace Application
             {
                 dataGridView[cell.Column, cell.Row].Value = string.IsNullOrEmpty(cell.Expression) ? string.Empty : cell.Value;
             }
+        }
+
+        private void informationButton_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show(_defaultConfiguration.Information, Name = _defaultConfiguration.UsefulInformation);
         }
     }
 }
