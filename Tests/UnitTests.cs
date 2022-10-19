@@ -7,6 +7,16 @@ namespace UnitTests
     public class CalculatorTests
     {
         [TestMethod]
+        public void EvaluateTestBinaryOperations()
+        {
+            Assert.AreEqual(Evaluator.GetValue("2+3"), 5);
+            Assert.AreEqual(Evaluator.GetValue("7-5"), 2);
+            Assert.AreEqual(Evaluator.GetValue("12*12"), 144);
+            Assert.AreEqual(Evaluator.GetValue("24/8"), 3);
+            Assert.AreEqual(Evaluator.GetValue("17+5-12"), 10);
+        }
+
+        [TestMethod]
         public void EvaluateTestUnaryMinus()
         {
             Assert.AreEqual(Evaluator.GetValue("-5"), -5);
@@ -32,6 +42,15 @@ namespace UnitTests
             Assert.AreEqual(Evaluator.GetValue("dec(6)"), 5);
             Assert.AreEqual(Evaluator.GetValue("inc(dec(5))"), 5);
             Assert.AreEqual(Evaluator.GetValue("dec(inc(5))"), 5);
+        }
+        
+        [TestMethod]
+        public void EvaluateTestMinMax()
+        {
+            Assert.AreEqual(Evaluator.GetValue("min(3, 3)"), 3);
+            Assert.AreEqual(Evaluator.GetValue("min(3, 6)"), 3);
+            Assert.AreEqual(Evaluator.GetValue("max(6, 6)"), 6);
+            Assert.AreEqual(Evaluator.GetValue("max(3, 6)"), 6);
         }
     }
 }
