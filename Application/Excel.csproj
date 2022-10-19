@@ -34,4 +34,8 @@
     </EmbeddedResource>
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Include="LabCalculator.g4" />
+  </ItemGroup>
+
 </Project>

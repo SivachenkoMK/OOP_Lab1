@@ -4,14 +4,14 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System;
+using Excel.Interfaces;
 using Excel.Models;
 
 namespace Excel.Services
 {
     public class TableService : ITableService
     { 
-        // TODO: Figure out WTF is it
-        private readonly Dictionary<string, string> _dictionary = new();
+        private readonly Dictionary<string, string> _displayedValues = new();
         private readonly ICellService _cellService;
 
         public TableService(ICellService cellService)
@@ -29,7 +29,7 @@ namespace Excel.Services
                 for (var j = 0; j < table.ColumnsAmount; j++)
                 {
                     newRow.Add(new Cell(i, j));
-                    _dictionary.Add(newRow.Last().Name, "");
+                    _displayedValues.Add(newRow.Last().Name, "");
                 }
 
                 table.Sheet.Add(newRow);
@@ -43,7 +43,7 @@ namespace Excel.Services
                 column.Clear();
 
             table.Sheet.Clear();
-            _dictionary.Clear();
+            _displayedValues.Clear();
 
             table.RowsAmount = 0;
             table.ColumnsAmount = 0;
@@ -77,7 +77,7 @@ namespace Excel.Services
                 if (expression[0] != '=') //expression not formula
                 {
                     currentCell.Value = expression;
-                    _dictionary[GetFullName(row, col)] = expression;
+                    _displayedValues[GetFullName(row, col)] = expression;
                     foreach (var cell in currentCell.PointersToThis)
                     {
                         RefreshCellAndPointers(table, cell, dataGridView1);
@@ -114,7 +114,7 @@ namespace Excel.Services
             }
 
             currentCell.Value = val;
-            _dictionary[GetFullName(row, col)] = val;
+            _displayedValues[GetFullName(row, col)] = val;
             foreach (var cell in currentCell.PointersToThis) //refresh all cells which has formula with currCell
                 RefreshCellAndPointers(table, cell, dataGridView1);
 
@@ -144,7 +144,7 @@ namespace Excel.Services
             }
 
             table.Sheet[cell.Row][cell.Column].Value = value;
-            _dictionary[GetFullName(cell.Row, cell.Column)] = value;
+            _displayedValues[GetFullName(cell.Row, cell.Column)] = value;
             dataGridView1[cell.Column, cell.Row].Value = value;
 
             return cell.PointersToThis.All(point => RefreshCellAndPointers(table, point, dataGridView1));
@@ -174,24 +174,26 @@ namespace Excel.Services
             const string cellNamePattern = @"[A-Z]+[0-9]+";
             var regex = new Regex(cellNamePattern, RegexOptions.IgnoreCase);
 
+            SetReferences(table, row, col, expr, regex);
+            
+            return regex.Replace(expr, ReferenceToValue);
+        }
+
+        private void SetReferences(Table table, int row, int col, string expr, Regex regex)
+        {
             foreach (Match match in regex.Matches(expr))
             {
-                if (_dictionary.ContainsKey(match.Value)) //addReference
-                {
-                    var nums = CoordinateEncoder.Decode(match.Value);
-                    table.Sheet[row][col].NewReferencesFromThis.Add(table.Sheet[nums.Item1][nums.Item2]);
-                }
+                if (!_displayedValues.ContainsKey(match.Value)) continue;
+                
+                var nums = CoordinateEncoder.Decode(match.Value);
+                table.Sheet[row][col].NewReferencesFromThis.Add(table.Sheet[nums.Item1][nums.Item2]);
             }
-
-            MatchEvaluator evaluator = ReferenceToValue;
-            var newExpression = regex.Replace(expr, evaluator);
-            return newExpression;
         }
 
         private string ReferenceToValue(Match m) //Evaluator for converting
         {
-            if (!_dictionary.ContainsKey(m.Value)) return m.Value;
-            return _dictionary[m.Value] == "" ? "0" : _dictionary[m.Value];
+            if (!_displayedValues.ContainsKey(m.Value)) return m.Value;
+            return _displayedValues[m.Value] == "" ? "0" : _displayedValues[m.Value];
         
         }
 
@@ -201,7 +203,7 @@ namespace Excel.Services
             for (var i = 0; i < table.ColumnsAmount; i++)
             {
                 newRow.Add(new Cell(table.RowsAmount, i));
-                _dictionary.Add(newRow.Last().Name, "");
+                _displayedValues.Add(newRow.Last().Name, "");
             }
 
             table.Sheet.Add(newRow);
@@ -214,7 +216,7 @@ namespace Excel.Services
             for (var i = 0; i < table.RowsAmount; i++)
             {
                 table.Sheet[i].Add(new Cell(i, table.ColumnsAmount));
-                _dictionary.Add(table.Sheet[i].Last().Name, "");
+                _displayedValues.Add(table.Sheet[i].Last().Name, "");
             }
 
             RefreshReferences(table);
@@ -231,7 +233,7 @@ namespace Excel.Services
             for (var i = 0; i < table.ColumnsAmount; i++)
             {
                 var name = GetFullName(curCount, i);
-                if (_dictionary[name] != "0" && _dictionary[name] != "" && _dictionary[name] != " ")
+                if (_displayedValues[name] != "0" && _displayedValues[name] != "" && _displayedValues[name] != " ")
                     notEmptyCells.Add(table.Sheet[curCount][i]);
                 if (table.Sheet[curCount][i].PointersToThis.Count != 0) //select cells that points to deleted cell
                     lastRowRef.AddRange(table.Sheet[curCount][i].PointersToThis);
@@ -263,7 +265,7 @@ namespace Excel.Services
             for (var i = 0; i < table.ColumnsAmount; i++)
             {
                 var name = GetFullName(curCount, i);
-                _dictionary.Remove(name);
+                _displayedValues.Remove(name);
             }
 
             foreach (var cell in notEmptyCells)
@@ -294,7 +296,7 @@ namespace Excel.Services
             for (var i = 0; i < table.RowsAmount; i++)
             {
                 var name = GetFullName(i, curCount);
-                if (_dictionary[name] != "0" && _dictionary[name] != "" && _dictionary[name] != " ")
+                if (_displayedValues[name] != "0" && _displayedValues[name] != "" && _displayedValues[name] != " ")
                     notEmptyCells.Add(table.Sheet[i][curCount]);
                 if (table.Sheet[i][curCount].PointersToThis.Count != 0) //select cells that points to deleted cell
                     lastColRef.AddRange(table.Sheet[i][curCount].PointersToThis);
@@ -326,7 +328,7 @@ namespace Excel.Services
             for (var i = 0; i < table.RowsAmount; i++)
             {
                 var name = GetFullName(i, curCount);
-                _dictionary.Remove(name);
+                _displayedValues.Remove(name);
             }
 
             foreach (var cell in notEmptyCells)
@@ -355,7 +357,7 @@ namespace Excel.Services
                 sw.WriteLine(cell.Name);
                 sw.WriteLine(cell.Expression);
                 sw.WriteLine(cell.Value);
-                if (cell.ReferencesFromThis == null)
+                if (cell.ReferencesFromThis.Count == 0)
                     sw.WriteLine("0");
                 else
                 {
@@ -364,7 +366,7 @@ namespace Excel.Services
                         sw.WriteLine(refCell.Name);
                 }
 
-                if (cell.PointersToThis == null)
+                if (cell.PointersToThis.Count == 0)
                     sw.WriteLine("0");
                 else
                 {
@@ -388,9 +390,9 @@ namespace Excel.Services
                     var value = sr.ReadLine();
 
                     if (expression != "")
-                        _dictionary[index] = value;
+                        _displayedValues[index] = value;
                     else
-                        _dictionary[index] = "";
+                        _displayedValues[index] = "";
 
                     var refCount = Convert.ToInt32(sr.ReadLine());
                     var newRef = new List<Cell>();
@@ -417,7 +419,7 @@ namespace Excel.Services
                     _cellService.UpdateCellData(table.Sheet[i][j], expression, value, newRef, newPoint);
                     var columnIndex = table.Sheet[i][j].Column;
                     var rowIndex = table.Sheet[i][j].Row;
-                    dataGridView1[columnIndex, rowIndex].Value = _dictionary[index];
+                    dataGridView1[columnIndex, rowIndex].Value = _displayedValues[index];
                 }
             }
         }

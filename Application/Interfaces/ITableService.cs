@@ -2,7 +2,7 @@
 using System.Windows.Forms;
 using Excel.Models;
 
-namespace Excel.Services
+namespace Excel.Interfaces
 {
     public interface ITableService
     {

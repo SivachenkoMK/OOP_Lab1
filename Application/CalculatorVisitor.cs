@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 
 namespace Excel
 {
@@ -86,6 +87,22 @@ namespace Excel
                 Debug.WriteLine("{0} / {1}", left, right);
                 return left / right;
             }
+        }
+        
+        public override double VisitMaxExpr(LabCalculatorParser.MaxExprContext context)
+        {
+            var left = WalkLeft(context);
+            var right = WalkRight(context);
+            Debug.WriteLine("max({0}, {1})", left, right);
+            return Math.Max(left, right);
+        }
+
+        public override double VisitMinExpr(LabCalculatorParser.MinExprContext context)
+        {
+            var left = WalkLeft(context);
+            var right = WalkRight(context);
+            Debug.WriteLine("min({0}, {1})", left, right);
+            return Math.Min(left, right);
         }
 
         private double WalkLeft(LabCalculatorParser.ExpressionContext context)

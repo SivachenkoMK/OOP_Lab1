@@ -8,11 +8,13 @@ expression :
 LPAREN expression RPAREN #ParenthesizedExpr
 |SUBTRACT LPAREN expression RPAREN #UnaryMinusExpr
 |operatorToken=(INCREMENT|DECREMENT) LPAREN expression RPAREN #IncDecExpr
+|MAX LPAREN exp1=expression COMMA exp2=expression RPAREN #MaxExpr
+|MIN LPAREN exp1=expression COMMA exp2=expression RPAREN #MinExpr
 |expression EXPONENT expression #ExponentialExpr
 |expression operatorToken=(MULTIPLY | DIVIDE) expression #MultiplicativeExpr
 | expression operatorToken=(ADD | SUBTRACT) expression #AdditiveExpr
-| NUMBER #NumberExpr
-| IDENTIFIER #IdentifierExpr;
+|NUMBER #NumberExpr
+|IDENTIFIER #IdentifierExpr;
 
 /*
  * Lexer Rules
@@ -28,9 +30,12 @@ MULTIPLY : '*';
 DIVIDE : '/';
 SUBTRACT : '-';
 ADD : '+';
-INCREMENT: 'inc';
-DECREMENT: 'dec';
+INCREMENT : 'inc';
+DECREMENT : 'dec';
+MAX : 'max';
+MIN : 'min';
 LPAREN : '(';
 RPAREN : ')';
+COMMA : ',';
 
 WS : [ \t\r\n] -> channel(HIDDEN);
