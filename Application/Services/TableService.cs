@@ -91,7 +91,7 @@ namespace Excel.Services
             if (newExpression != "")
                 newExpression = newExpression.Remove(0, 1);
 
-            if (!_cellService.CheckLoop(currentCell, currentCell.NewReferencesFromThis)) //check new references for loop 
+            if (_cellService.IsLoop(currentCell)) //check new references for loop 
             {
                 MessageBox.Show("There is a loop! Change the expression");
                 currentCell.Expression = "";
@@ -178,7 +178,7 @@ namespace Excel.Services
             {
                 if (_dictionary.ContainsKey(match.Value)) //addReference
                 {
-                    var nums = ColumnNameEncoder.Decode(match.Value);
+                    var nums = CoordinateEncoder.Decode(match.Value);
                     table.Sheet[row][col].NewReferencesFromThis.Add(table.Sheet[nums.Item1][nums.Item2]);
                 }
             }
@@ -397,8 +397,8 @@ namespace Excel.Services
                     for (var k = 0; k < refCount; k++)
                     {
                         var refer = sr.ReadLine();
-                        var curRow = ColumnNameEncoder.Decode(refer).Item1;
-                        var curCol = ColumnNameEncoder.Decode(refer).Item2;
+                        var curRow = CoordinateEncoder.Decode(refer).Item1;
+                        var curCol = CoordinateEncoder.Decode(refer).Item2;
 
                         if (curRow < table.RowsAmount && curCol < table.ColumnsAmount)
                             newRef.Add(table.Sheet[curRow][curCol]);
@@ -409,8 +409,8 @@ namespace Excel.Services
                     for (var k = 0; k < pointCount; k++)
                     {
                         var point = sr.ReadLine();
-                        var curRow = ColumnNameEncoder.Decode(point).Item1;
-                        var curCol = ColumnNameEncoder.Decode(point).Item2;
+                        var curRow = CoordinateEncoder.Decode(point).Item1;
+                        var curCol = CoordinateEncoder.Decode(point).Item2;
                         newPoint.Add(table.Sheet[curRow][curCol]);
                     }
 

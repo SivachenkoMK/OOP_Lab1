@@ -3,7 +3,7 @@
 namespace Excel
 {
 
-    public static class ColumnNameEncoder
+    public static class CoordinateEncoder
     {
         public static string Encode(int x)
         {
@@ -19,7 +19,7 @@ namespace Excel
             return columnName;
         }
 
-        public static Tuple<int, int> Decode(string input) //change occur 1AA еtc
+        public static Tuple<int, int> Decode(string input)
         {
             var col = 0;
             var row = 0;

@@ -19,7 +19,7 @@ namespace Excel.Models
         {
             Row = row;
             Column = column;
-            Name = ColumnNameEncoder.Encode(column) + row;
+            Name = CoordinateEncoder.Encode(column) + row;
         }
     }
 }

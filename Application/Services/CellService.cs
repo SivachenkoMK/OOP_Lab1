@@ -14,25 +14,26 @@ namespace Excel.Services
             cell.PointersToThis.AddRange(pointers);
         }
 
-        public bool CheckLoop(Cell cell, List<Cell> list)  //??
+        public bool IsLoop(Cell cell)  //??
         {
+            var list = cell.NewReferencesFromThis;
             if (list.Any(c => c.Name == cell.Name))
             {
-                return false;
+                return true;
             }
             foreach (var point in cell.PointersToThis)
             {
                 if (list.Any(c => c.Name == point.Name))
                 {
-                    return false;
+                    return true;
                 }
 
-                if (!CheckLoop(cell, list))
+                if (IsLoop(cell))
                 {
-                    return false;
+                    return true;
                 }
             }
-            return true;
+            return false;
         }
 
         public void AddPointersAndReferences(Cell cell)

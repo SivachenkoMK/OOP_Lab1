@@ -7,7 +7,7 @@ namespace Excel.Services
     {
         void UpdateCellData(Cell cell, string expression, string value, List<Cell> references, List<Cell> pointers);
 
-        bool CheckLoop(Cell cell, List<Cell> list);
+        bool IsLoop(Cell cell);
 
         void AddPointersAndReferences(Cell cell);
 
