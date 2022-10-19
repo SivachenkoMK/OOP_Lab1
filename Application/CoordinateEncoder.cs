@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Excel
+namespace Application
 {
 
     public static class CoordinateEncoder

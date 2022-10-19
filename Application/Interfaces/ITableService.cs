@@ -1,8 +1,8 @@
 ﻿using System.IO;
 using System.Windows.Forms;
-using Excel.Models;
+using Application.Models;
 
-namespace Excel.Interfaces
+namespace Application.Interfaces
 {
     public interface ITableService
     {

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using Excel.Models;
+using Application.Models;
 
-namespace Excel.Interfaces
+namespace Application.Interfaces
 {
     public interface ICellService
     {

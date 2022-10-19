@@ -16,7 +16,7 @@ using System.Globalization;
 using System.Resources;
 using System.Runtime.CompilerServices;
 
-namespace Excel.Properties {
+namespace Application.Properties {
     /// <summary>
     ///   Класс ресурса со строгой типизацией для поиска локализованных строк и т.д.
     /// </summary>
@@ -44,7 +44,7 @@ namespace Excel.Properties {
         internal static ResourceManager ResourceManager {
             get {
                 if (ReferenceEquals(resourceMan, null)) {
-                    ResourceManager temp = new ResourceManager("Excel.Properties.Resources", typeof(Resources).Assembly);
+                    ResourceManager temp = new ResourceManager("Application.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

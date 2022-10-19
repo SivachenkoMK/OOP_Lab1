@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 
-namespace Excel
+namespace Application
 {
     public class CalculatorVisitor : LabCalculatorBaseVisitor<double>
     {

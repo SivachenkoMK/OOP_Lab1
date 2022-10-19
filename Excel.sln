@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Excel", "Application\Excel.csproj", "{52DEA615-596D-4F51-BE9D-9FFF268946BF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application", "Application\Application.csproj", "{52DEA615-596D-4F51-BE9D-9FFF268946BF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "Tests\UnitTests.csproj", "{B053A8F3-F1CD-44F1-8E6B-1460A06F2FC5}"
 EndProject

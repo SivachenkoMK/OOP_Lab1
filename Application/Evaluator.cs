@@ -1,6 +1,6 @@
 ﻿using Antlr4.Runtime;
 
-namespace Excel
+namespace Application
 {
     public static class Evaluator
     {

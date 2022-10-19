@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Excel.Interfaces;
-using Excel.Models;
+using Application.Interfaces;
+using Application.Models;
 
-namespace Excel.Services
+namespace Application.Services
 {
     public class CellService : ICellService
     {

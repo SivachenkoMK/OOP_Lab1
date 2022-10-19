@@ -1,7 +1,7 @@
 ﻿using System;
 using Antlr4.Runtime;
 
-namespace Excel
+namespace Application
 {
     public class ThrowExceptionErrorListener : BaseErrorListener, IAntlrErrorListener<int>
     {

@@ -6,13 +6,12 @@ using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
-using Excel.Configs;
-using Excel.Interfaces;
-using Excel.Models;
-using Microsoft.Extensions.Configuration;
+using Application.Configs;
+using Application.Interfaces;
+using Application.Models;
 using Microsoft.Extensions.Options;
 
-namespace Excel.Services
+namespace Application.Services
 {
     public class TableService : ITableService
     { 
@@ -41,7 +40,7 @@ namespace Excel.Services
                 table.Sheet.Add(newRow);
             }
             return table;
-        } //init table by 2 param
+        }
 
         public void Clear(Table table)
         {
@@ -63,7 +62,7 @@ namespace Excel.Services
         }
 
         public void ChangeCellWithAllPointers(Table table, int row, int col, string expression,
-            DataGridView dataGridView1) //refresh cell value with check loops(Main func)
+            DataGridView dataGridView1) 
         {
             var cell = table.Sheet[row][col];
             _cellService.DeletePointersAndReferences(cell);
@@ -72,7 +71,7 @@ namespace Excel.Services
 
             if (expression != "")
             {
-                if (expression[0] != '=') //expression not formula
+                if (expression[0] != '=') 
                 {
                     cell.Value = expression;
                     table.DisplayedValues[GetFullNameForCell(row, col)] = expression;
@@ -83,15 +82,15 @@ namespace Excel.Services
 
                     return;
                 }
-            } //expression formula
+            } 
 
             var newExpression = ConvertReferences(table, row, col, expression);
             if (newExpression != "")
                 newExpression = newExpression.Remove(0, 1);
 
-            if (_cellService.IsLoop(cell)) //check new references for loop 
+            if (_cellService.IsLoop(cell))
             {
-                MessageBox.Show("There is a loop! Change the expression");
+                MessageBox.Show(_errorMessages.Loop);
                 cell.Expression = "";
                 cell.Value = "";
                 dataGridView1[col, row].Value = "0";
@@ -114,25 +113,24 @@ namespace Excel.Services
 
         private bool GetValue(DataGridView dataGridView1, string newExpression, Cell cell, out string value)
         {
-            bool isSuccess = true;
             try
             {
                 TryGetValue(newExpression, out value);
             }
             catch (ArgumentException argumentException)
             {
-                MessageBox.Show(string.Format("{0}: in the cell {1}", argumentException.Message, cell.Name));
+                MessageBox.Show(string.Format(_errorMessages.MessageAndName, argumentException.Message, cell.Name));
                 WrongSetUpCellFormatting(dataGridView1, cell, out value);
                 return false;
             }
             catch (Exception)
             {
-                MessageBox.Show($"Error in cell {cell.Name}");
+                MessageBox.Show(string.Format(_errorMessages.Name, cell.Name));
                 WrongSetUpCellFormatting(dataGridView1, cell, out value);
                 return false;
             }
             
-            return isSuccess;
+            return true;
         }
 
         private void WrongSetUpCellFormatting(DataGridView dataGridView1, Cell cell, out string value)
@@ -149,13 +147,13 @@ namespace Excel.Services
             return cell.Name;
         }
 
-        private bool RefreshCellAndPointers(Table table, Cell cell, DataGridView dataGridView1) //refresh cell
+        private bool RefreshCellAndPointers(Table table, Cell cell, DataGridView dataGridView1) 
         {
             cell.NewReferencesFromThis.Clear();
             var newExpression =
-                ConvertReferences(table, cell.Row, cell.Column, cell.Expression); //expression without Cell Names
-            newExpression = newExpression.Remove(0, 1); //remove '='
-            var isSuccess = GetValue(dataGridView1, newExpression, cell, out var value); //calculate ready expression
+                ConvertReferences(table, cell.Row, cell.Column, cell.Expression); 
+            newExpression = newExpression.Remove(0, 1); 
+            var isSuccess = GetValue(dataGridView1, newExpression, cell, out var value); 
 
             if (!isSuccess)
                 return false;
@@ -167,7 +165,7 @@ namespace Excel.Services
             return cell.PointersToThis.All(point => RefreshCellAndPointers(table, point, dataGridView1));
         }
 
-        private void RefreshReferences(Table table) //refresh only refs from each cell in all table
+        private void RefreshReferences(Table table)
         {
             foreach (var cell in table.Sheet.SelectMany(row => row))
             {
@@ -184,7 +182,7 @@ namespace Excel.Services
 
         private Table? _tempTable;
 
-        private string ConvertReferences(Table table, int row, int col, string expr) // 5+4*AA1-->5+4*('Value of AA1) and add references
+        private string ConvertReferences(Table table, int row, int col, string expr)
         {
             const string cellNamePattern = @"[A-Z]+[0-9]+";
             var regex = new Regex(cellNamePattern, RegexOptions.IgnoreCase);
@@ -241,7 +239,7 @@ namespace Excel.Services
 
         public bool DeleteRow(Table table, DataGridView dataGridView1)
         {
-            var lastRowRef = new List<Cell>(); //Cells that have references on the delete row
+            var lastRowRef = new List<Cell>(); 
             var notEmptyCells = new List<Cell>();
             if (table.RowsAmount == 0)
                 return false;
@@ -251,7 +249,7 @@ namespace Excel.Services
                 var name = GetFullNameForCell(curCount, i);
                 if (table.DisplayedValues[name] != "0" && table.DisplayedValues[name] != "" && table.DisplayedValues[name] != " ")
                     notEmptyCells.Add(table.Sheet[curCount][i]);
-                if (table.Sheet[curCount][i].PointersToThis.Count != 0) //select cells that points to deleted cell
+                if (table.Sheet[curCount][i].PointersToThis.Count != 0)
                     lastRowRef.AddRange(table.Sheet[curCount][i].PointersToThis);
             }
 
@@ -260,20 +258,20 @@ namespace Excel.Services
                 var errorMessage = "";
                 if (notEmptyCells.Count != 0)
                 {
-                    errorMessage = notEmptyCells.Aggregate("There are not empty cells: ",
+                    errorMessage = notEmptyCells.Aggregate(_errorMessages.NonEmptyCellsPresent,
                         (current, cell) => current + string.Join(";", cell.Name));
                     errorMessage += "\n";
                 }
 
                 if (lastRowRef.Count != 0)
                 {
-                    errorMessage += "There are cells that point to cells from current Row:\n";
+                    errorMessage += _errorMessages.ReferencesToCurrentRowPresent + "\n";
                     errorMessage = lastRowRef.Aggregate(errorMessage,
                         (current, cell) => current + string.Join(";", cell.Name));
                 }
 
-                errorMessage += "\nAre you sure want to delete this column?";
-                var res = MessageBox.Show(errorMessage, "Warning", MessageBoxButtons.YesNo);
+                errorMessage += "\n" + _errorMessages.ConfirmDeletingThisRow;
+                var res = MessageBox.Show(errorMessage, _errorMessages.Warning, MessageBoxButtons.YesNo);
                 if (res == DialogResult.No)
                     return false;
             }
@@ -302,7 +300,7 @@ namespace Excel.Services
 
         public bool DeleteColumn(Table table, DataGridView dataGridView1)
         {
-            var lastColRef = new List<Cell>(); //Cells that have references on the delete column
+            var lastColRef = new List<Cell>(); 
             var notEmptyCells = new List<Cell>();
             if (table.ColumnsAmount == 1)
                 return false;
@@ -312,7 +310,7 @@ namespace Excel.Services
                 var name = GetFullNameForCell(i, curCount);
                 if (table.DisplayedValues[name] != "0" && table.DisplayedValues[name] != "" && table.DisplayedValues[name] != " ")
                     notEmptyCells.Add(table.Sheet[i][curCount]);
-                if (table.Sheet[i][curCount].PointersToThis.Count != 0) //select cells that points to deleted cell
+                if (table.Sheet[i][curCount].PointersToThis.Count != 0) 
                     lastColRef.AddRange(table.Sheet[i][curCount].PointersToThis);
             }
 
@@ -321,20 +319,20 @@ namespace Excel.Services
                 var errorMessage = "";
                 if (notEmptyCells.Count != 0)
                 {
-                    errorMessage = lastColRef.Aggregate("There are not empty cells: ",
+                    errorMessage = lastColRef.Aggregate(_errorMessages.NonEmptyCellsPresent,
                         (current, cell) => current + string.Join(";", cell.Name));
                     errorMessage += "\n";
                 }
 
                 if (lastColRef.Count != 0)
                 {
-                    errorMessage += "There are cells that point to cells from current column:\n";
+                    errorMessage += _errorMessages.ReferencesToCurrentColumnPresent;
                     errorMessage = lastColRef.Aggregate(errorMessage,
                         (current, cell) => current + string.Join(";", cell.Name));
                 }
 
-                errorMessage += "\nAre you sure want to delete this column?";
-                var res = MessageBox.Show(errorMessage, "Warning", MessageBoxButtons.YesNo);
+                errorMessage += "\n" + _errorMessages.ConfirmDeletingThisColumn;
+                var res = MessageBox.Show(errorMessage, _errorMessages.Warning, MessageBoxButtons.YesNo);
                 if (res == DialogResult.No)
                     return false;
             }

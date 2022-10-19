@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Excel.Models
+namespace Application.Models
 {
     [Serializable]
     public class Table
