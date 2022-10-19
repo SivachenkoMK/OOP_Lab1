@@ -14,7 +14,7 @@ namespace Excel.Services
             cell.PointersToThis.AddRange(pointers);
         }
 
-        public bool IsLoop(Cell cell, List<Cell>? viewedCells)
+        public bool IsLoop(Cell cell, List<Cell>? viewedCells = null)
         {
             viewedCells ??= new List<Cell>();
             if (viewedCells.Contains(cell))
@@ -41,14 +41,11 @@ namespace Excel.Services
 
         public void DeletePointersAndReferences(Cell cell)
         {
-            if (cell.ReferencesFromThis == null) return;
-
             foreach (var point in cell.ReferencesFromThis)
             {
                 point.PointersToThis.Remove(cell);
             }
-            cell.ReferencesFromThis = null;
+            cell.ReferencesFromThis = new List<Cell>();
         }
-
     }
 }

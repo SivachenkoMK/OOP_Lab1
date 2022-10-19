@@ -91,7 +91,7 @@ namespace Excel.Services
             if (newExpression != "")
                 newExpression = newExpression.Remove(0, 1);
 
-            if (_cellService.IsLoop(currentCell, null)) //check new references for loop 
+            if (_cellService.IsLoop(currentCell)) //check new references for loop 
             {
                 MessageBox.Show("There is a loop! Change the expression");
                 currentCell.Expression = "";
