@@ -5,6 +5,8 @@
     <TargetFramework>net5.0-windows</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
     <Nullable>enable</Nullable>
+    <RootNamespace>Application</RootNamespace>
+    <StartWorkingDirectory>.</StartWorkingDirectory>
   </PropertyGroup>
 
   <ItemGroup>

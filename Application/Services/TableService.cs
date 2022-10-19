@@ -6,18 +6,23 @@ using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using Excel.Configs;
 using Excel.Interfaces;
 using Excel.Models;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 
 namespace Excel.Services
 {
     public class TableService : ITableService
     { 
         private readonly ICellService _cellService;
+        private readonly ErrorMessages _errorMessages;
 
-        public TableService(ICellService cellService)
+        public TableService(ICellService cellService, IOptions<ErrorMessages> errorMessagesOptions)
         {
             _cellService = cellService;
+            _errorMessages = errorMessagesOptions.Value;
         }
         
         public Table CreateTable(int columnsAmount, int rowsAmount)
@@ -54,7 +59,7 @@ namespace Excel.Services
         {
             value = Evaluator.GetValue(expression).ToString();
             if (value == "∞")
-                throw new ArgumentException("Value is too big, or division by 0");
+                throw new ArgumentException(_errorMessages.DivisionByZero);
         }
 
         public void ChangeCellWithAllPointers(Table table, int row, int col, string expression,
@@ -116,7 +121,7 @@ namespace Excel.Services
             }
             catch (ArgumentException argumentException)
             {
-                MessageBox.Show($"{argumentException.Message}: in the cell {cell.Name}");
+                MessageBox.Show(string.Format("{0}: in the cell {1}", argumentException.Message, cell.Name));
                 WrongSetUpCellFormatting(dataGridView1, cell, out value);
                 return false;
             }

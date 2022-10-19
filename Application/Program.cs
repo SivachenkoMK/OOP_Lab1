@@ -1,27 +1,46 @@
 using System;
+using System.IO;
 using System.Windows.Forms;
+using Excel;
+using Excel.Configs;
 using Excel.Interfaces;
 using Excel.Services;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace Excel
+namespace Application
 {
     public static class Program
     {
+        private static IConfiguration _configuration;
+        private const string EnvVariableName = "ASPNETCORE_ENVIRONMENT";
+
         /// <summary>
         ///  The main entry point for the application.
         /// </summary>
         [STAThread]
         static void Main()
         {
-            Application.SetHighDpiMode(HighDpiMode.SystemAware);
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
+            System.Windows.Forms.Application.SetHighDpiMode(HighDpiMode.SystemAware);
+            System.Windows.Forms.Application.EnableVisualStyles();
+            System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false);
+            
+            var envName = Environment.GetEnvironmentVariable(EnvVariableName);
+            var settingsFileName = !string.IsNullOrEmpty(envName)
+                ? $"appsettings.{envName}.json"
+                : $"appsettings.Development.json";
+
+
+            _configuration =
+                new ConfigurationBuilder()
+                    .SetBasePath(Directory.GetCurrentDirectory())
+                    .AddJsonFile(settingsFileName).Build();
+
             
             var host = CreateHostBuilder().Build();
 
-            Application.Run(host.Services.GetRequiredService<MyExcel>());
+            System.Windows.Forms.Application.Run(host.Services.GetRequiredService<MyExcel>());
         }
 
         private static IHostBuilder CreateHostBuilder()
@@ -31,6 +50,7 @@ namespace Excel
                     services.AddTransient<ICellService, CellService>();
                     services.AddTransient<ITableService, TableService>();
                     services.AddTransient<MyExcel>();
+                    services.Configure<ErrorMessages>(_configuration.GetSection(nameof(ErrorMessages)));
                 });
         }
     }
