@@ -50,6 +50,8 @@ namespace Application
                     services.AddTransient<ITableService, TableService>();
                     services.AddTransient<MyExcel>();
                     services.Configure<ErrorMessages>(_configuration.GetSection(nameof(ErrorMessages)));
+                    services.Configure<FileManagementOptions>(_configuration.GetSection(nameof(FileManagementOptions)));
+                    services.Configure<DefaultConfiguration>(_configuration.GetSection(nameof(DefaultConfiguration)));
                 });
         }
     }

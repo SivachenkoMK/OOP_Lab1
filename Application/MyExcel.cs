@@ -2,8 +2,10 @@
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using Application.Configs;
 using Application.Interfaces;
 using Application.Models;
+using Microsoft.Extensions.Options;
 
 namespace Application
 {
@@ -11,14 +13,17 @@ namespace Application
     {
         private Table _table = new();
         private readonly ITableService _tableService;
+        private readonly FileManagementOptions _fileManagementOptions;
+        private readonly DefaultConfiguration _defaultConfiguration;
         
-        public MyExcel(ITableService tableService)
+        public MyExcel(ITableService tableService, IOptions<FileManagementOptions> options, IOptions<DefaultConfiguration> defaultTableConfiguration)
         {
             _tableService = tableService;
+            _fileManagementOptions = options.Value;
+            _defaultConfiguration = defaultTableConfiguration.Value;
             InitializeComponent();
-            // TODO: Move to configs
-            InitializeDataGridView(30, 35);
-            CreateTable(30, 35);
+            InitializeDataGridView(_defaultConfiguration.DefaultRowsAmount, _defaultConfiguration.DefaultColumnsAmount);
+            CreateTable(_defaultConfiguration.DefaultRowsAmount, _defaultConfiguration.DefaultColumnsAmount);
         }
 
         private void InitializeDataGridView(int rows, int columns)
@@ -113,8 +118,8 @@ namespace Application
         private void saveButton_Click(object sender, EventArgs e)
         {
             var saveFileDialog = new SaveFileDialog();
-            saveFileDialog.Filter = "TableFile|*.bin";
-            saveFileDialog.Title = "Save table as a file";
+            saveFileDialog.Filter = _fileManagementOptions.FileFormat;
+            saveFileDialog.Title = _fileManagementOptions.SaveTable;
             saveFileDialog.ShowDialog();
 
             if (string.IsNullOrEmpty(saveFileDialog.FileName)) return;
@@ -127,8 +132,8 @@ namespace Application
         private void openButton_Click(object sender, EventArgs e)
         {
             var openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "TableFile|*.bin";
-            openFileDialog.Title = "Open Table";
+            openFileDialog.Filter = _fileManagementOptions.FileFormat;
+            openFileDialog.Title = _fileManagementOptions.OpenTable;
             if (openFileDialog.ShowDialog() != DialogResult.OK)
                 return;
             _tableService.Clear(_table);

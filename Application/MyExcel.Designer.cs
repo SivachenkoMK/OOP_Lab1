@@ -109,7 +109,7 @@ namespace Application
             this.calculateButton.Name = "calculateButton";
             this.calculateButton.Size = new System.Drawing.Size(104, 30);
             this.calculateButton.TabIndex = 1;
-            this.calculateButton.Text = "Evaluate";
+            this.calculateButton.Text = _defaultConfiguration.CalculateMessage;
             this.calculateButton.UseVisualStyleBackColor = true;
             this.calculateButton.Click += new System.EventHandler(this.calculateButton_Click);
             // 
@@ -164,7 +164,7 @@ namespace Application
             this.rowLabel.Name = "rowLabel";
             this.rowLabel.Size = new System.Drawing.Size(47, 20);
             this.rowLabel.TabIndex = 4;
-            this.rowLabel.Text = "Rows:";
+            this.rowLabel.Text = _defaultConfiguration.Rows;
             // 
             // addColButton
             // 
@@ -185,7 +185,7 @@ namespace Application
             this.label.Name = "label";
             this.label.Size = new System.Drawing.Size(69, 20);
             this.label.TabIndex = 2;
-            this.label.Text = "Columns:";
+            this.label.Text = _defaultConfiguration.Columns;
             // 
             // saveButton
             // 
@@ -194,7 +194,7 @@ namespace Application
             this.saveButton.Name = "saveButton";
             this.saveButton.Size = new System.Drawing.Size(80, 32);
             this.saveButton.TabIndex = 1;
-            this.saveButton.Text = "Save";
+            this.saveButton.Text = _defaultConfiguration.Save;
             this.saveButton.UseVisualStyleBackColor = true;
             this.saveButton.Click += new System.EventHandler(this.saveButton_Click);
             // 
@@ -205,7 +205,7 @@ namespace Application
             this.openButton.Name = "openButton";
             this.openButton.Size = new System.Drawing.Size(80, 32);
             this.openButton.TabIndex = 0;
-            this.openButton.Text = "Open";
+            this.openButton.Text = _defaultConfiguration.Open;
             this.openButton.UseVisualStyleBackColor = true;
             this.openButton.Click += new System.EventHandler(this.openButton_Click);
             // 
@@ -217,8 +217,8 @@ namespace Application
             this.Controls.Add(this.panel);
             this.Controls.Add(this.splitContainer);
             this.Margin = new System.Windows.Forms.Padding(2);
-            this.Name = "MyExcel";
-            this.Text = "MyExcel";
+            this.Name = _defaultConfiguration.ApplicationName;
+            this.Text = _defaultConfiguration.ApplicationName;
             this.panel.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).EndInit();
             this.splitContainer.Panel1.ResumeLayout(false);
