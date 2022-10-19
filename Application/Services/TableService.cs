@@ -88,7 +88,7 @@ namespace Excel.Services
                 }
             } //expression formula
 
-            string newExpression = ConvertReferences(table, row, col, expression);
+            var newExpression = ConvertReferences(table, row, col, expression);
             if (newExpression != "")
                 newExpression = newExpression.Remove(0, 1);
 
@@ -153,24 +153,23 @@ namespace Excel.Services
 
         private void RefreshReferences(Table table) //refresh only refs from each cell in all table
         {
-            foreach (List<Cell> list in table.Sheet)
+            foreach (var row in table.Sheet)
             {
-                foreach (Cell cell in list)
+                foreach (var cell in row)
                 {
-                    cell.ReferencesFromThis?.Clear();
-                    cell.NewReferencesFromThis?.Clear();
-                    if (cell.Expression == "")
+                    cell.ReferencesFromThis.Clear();
+                    cell.NewReferencesFromThis.Clear();
+                    if (string.IsNullOrWhiteSpace(cell.Expression))
                         continue;
-                    if (cell.Expression[0] == '=') //has formula
-                    {
-                        ConvertReferences(table, cell.Row, cell.Column, cell.Expression);
-                        cell.ReferencesFromThis?.AddRange(cell.NewReferencesFromThis!);
-                    }
+                    if (cell.Expression[0] != '=') continue;
+                    
+                    ConvertReferences(table, cell.Row, cell.Column, cell.Expression);
+                    cell.ReferencesFromThis.AddRange(cell.NewReferencesFromThis);
                 }
             }
         }
 
-        private Table tempTable;
+        private Table? _tempTable;
 
         private string ConvertReferences(Table table, int row, int col, string expr) // 5+4*AA1-->5+4*('Value of AA1) and add references
         {
@@ -179,7 +178,7 @@ namespace Excel.Services
 
             SetReferences(table, row, col, expr, regex);
 
-            tempTable = table;
+            _tempTable = table;
             
             return regex.Replace(expr, ReferenceToValue);
         }
@@ -195,10 +194,10 @@ namespace Excel.Services
             }
         }
 
-        private string ReferenceToValue(Match m) //Evaluator for converting
+        private string ReferenceToValue(Match m) 
         {
-            if (!tempTable.DisplayedValues.ContainsKey(m.Value)) return m.Value;
-            return tempTable.DisplayedValues[m.Value] == "" ? "0" : tempTable.DisplayedValues[m.Value];
+            if (!_tempTable!.DisplayedValues.ContainsKey(m.Value)) return m.Value;
+            return _tempTable.DisplayedValues[m.Value] == "" ? "0" : _tempTable.DisplayedValues[m.Value];
         }
 
         public void AddRow(Table table, DataGridView dataGridView1)
@@ -335,7 +334,6 @@ namespace Excel.Services
 
             foreach (var cell in notEmptyCells)
             {
-                if (cell.ReferencesFromThis == null) continue;
                 foreach (var reference in cell.ReferencesFromThis)
                     reference.PointersToThis.Remove(cell);
             }
