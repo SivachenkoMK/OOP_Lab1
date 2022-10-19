@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
-using System;
 using Excel.Interfaces;
 using Excel.Models;
 
@@ -11,7 +13,6 @@ namespace Excel.Services
 {
     public class TableService : ITableService
     { 
-        private readonly Dictionary<string, string> _displayedValues = new();
         private readonly ICellService _cellService;
 
         public TableService(ICellService cellService)
@@ -29,7 +30,7 @@ namespace Excel.Services
                 for (var j = 0; j < table.ColumnsAmount; j++)
                 {
                     newRow.Add(new Cell(i, j));
-                    _displayedValues.Add(newRow.Last().Name, "");
+                    table.DisplayedValues.Add(newRow.Last().Name, "");
                 }
 
                 table.Sheet.Add(newRow);
@@ -43,7 +44,7 @@ namespace Excel.Services
                 column.Clear();
 
             table.Sheet.Clear();
-            _displayedValues.Clear();
+            table.DisplayedValues.Clear();
 
             table.RowsAmount = 0;
             table.ColumnsAmount = 0;
@@ -77,7 +78,7 @@ namespace Excel.Services
                 if (expression[0] != '=') //expression not formula
                 {
                     currentCell.Value = expression;
-                    _displayedValues[GetFullName(row, col)] = expression;
+                    table.DisplayedValues[GetFullName(row, col)] = expression;
                     foreach (var cell in currentCell.PointersToThis)
                     {
                         RefreshCellAndPointers(table, cell, dataGridView1);
@@ -114,7 +115,7 @@ namespace Excel.Services
             }
 
             currentCell.Value = val;
-            _displayedValues[GetFullName(row, col)] = val;
+            table.DisplayedValues[GetFullName(row, col)] = val;
             foreach (var cell in currentCell.PointersToThis) //refresh all cells which has formula with currCell
                 RefreshCellAndPointers(table, cell, dataGridView1);
 
@@ -144,7 +145,7 @@ namespace Excel.Services
             }
 
             table.Sheet[cell.Row][cell.Column].Value = value;
-            _displayedValues[GetFullName(cell.Row, cell.Column)] = value;
+            table.DisplayedValues[GetFullName(cell.Row, cell.Column)] = value;
             dataGridView1[cell.Column, cell.Row].Value = value;
 
             return cell.PointersToThis.All(point => RefreshCellAndPointers(table, point, dataGridView1));
@@ -169,12 +170,16 @@ namespace Excel.Services
             }
         }
 
+        private Table tempTable;
+
         private string ConvertReferences(Table table, int row, int col, string expr) // 5+4*AA1-->5+4*('Value of AA1) and add references
         {
             const string cellNamePattern = @"[A-Z]+[0-9]+";
             var regex = new Regex(cellNamePattern, RegexOptions.IgnoreCase);
 
             SetReferences(table, row, col, expr, regex);
+
+            tempTable = table;
             
             return regex.Replace(expr, ReferenceToValue);
         }
@@ -183,7 +188,7 @@ namespace Excel.Services
         {
             foreach (Match match in regex.Matches(expr))
             {
-                if (!_displayedValues.ContainsKey(match.Value)) continue;
+                if (!table.DisplayedValues.ContainsKey(match.Value)) continue;
                 
                 var nums = CoordinateEncoder.Decode(match.Value);
                 table.Sheet[row][col].NewReferencesFromThis.Add(table.Sheet[nums.Item1][nums.Item2]);
@@ -192,9 +197,8 @@ namespace Excel.Services
 
         private string ReferenceToValue(Match m) //Evaluator for converting
         {
-            if (!_displayedValues.ContainsKey(m.Value)) return m.Value;
-            return _displayedValues[m.Value] == "" ? "0" : _displayedValues[m.Value];
-        
+            if (!tempTable.DisplayedValues.ContainsKey(m.Value)) return m.Value;
+            return tempTable.DisplayedValues[m.Value] == "" ? "0" : tempTable.DisplayedValues[m.Value];
         }
 
         public void AddRow(Table table, DataGridView dataGridView1)
@@ -203,7 +207,7 @@ namespace Excel.Services
             for (var i = 0; i < table.ColumnsAmount; i++)
             {
                 newRow.Add(new Cell(table.RowsAmount, i));
-                _displayedValues.Add(newRow.Last().Name, "");
+                table.DisplayedValues.Add(newRow.Last().Name, "");
             }
 
             table.Sheet.Add(newRow);
@@ -216,7 +220,7 @@ namespace Excel.Services
             for (var i = 0; i < table.RowsAmount; i++)
             {
                 table.Sheet[i].Add(new Cell(i, table.ColumnsAmount));
-                _displayedValues.Add(table.Sheet[i].Last().Name, "");
+                table.DisplayedValues.Add(table.Sheet[i].Last().Name, "");
             }
 
             RefreshReferences(table);
@@ -233,7 +237,7 @@ namespace Excel.Services
             for (var i = 0; i < table.ColumnsAmount; i++)
             {
                 var name = GetFullName(curCount, i);
-                if (_displayedValues[name] != "0" && _displayedValues[name] != "" && _displayedValues[name] != " ")
+                if (table.DisplayedValues[name] != "0" && table.DisplayedValues[name] != "" && table.DisplayedValues[name] != " ")
                     notEmptyCells.Add(table.Sheet[curCount][i]);
                 if (table.Sheet[curCount][i].PointersToThis.Count != 0) //select cells that points to deleted cell
                     lastRowRef.AddRange(table.Sheet[curCount][i].PointersToThis);
@@ -265,13 +269,11 @@ namespace Excel.Services
             for (var i = 0; i < table.ColumnsAmount; i++)
             {
                 var name = GetFullName(curCount, i);
-                _displayedValues.Remove(name);
+                table.DisplayedValues.Remove(name);
             }
 
             foreach (var cell in notEmptyCells)
             {
-                if (cell.ReferencesFromThis == null) continue;
-
                 foreach (var reference in cell.ReferencesFromThis)
                     reference.PointersToThis.Remove(cell);
             }
@@ -296,7 +298,7 @@ namespace Excel.Services
             for (var i = 0; i < table.RowsAmount; i++)
             {
                 var name = GetFullName(i, curCount);
-                if (_displayedValues[name] != "0" && _displayedValues[name] != "" && _displayedValues[name] != " ")
+                if (table.DisplayedValues[name] != "0" && table.DisplayedValues[name] != "" && table.DisplayedValues[name] != " ")
                     notEmptyCells.Add(table.Sheet[i][curCount]);
                 if (table.Sheet[i][curCount].PointersToThis.Count != 0) //select cells that points to deleted cell
                     lastColRef.AddRange(table.Sheet[i][curCount].PointersToThis);
@@ -328,7 +330,7 @@ namespace Excel.Services
             for (var i = 0; i < table.RowsAmount; i++)
             {
                 var name = GetFullName(i, curCount);
-                _displayedValues.Remove(name);
+                table.DisplayedValues.Remove(name);
             }
 
             foreach (var cell in notEmptyCells)
@@ -347,81 +349,21 @@ namespace Excel.Services
 
         }
 
-        public void Save(Table table, StreamWriter sw)
+        public void Save(Table table, FileStream stream)
         {
-            sw.WriteLine(table.RowsAmount);
-            sw.WriteLine(table.ColumnsAmount);
-
-            foreach (var cell in table.Sheet.SelectMany(list => list).ToList())
-            {
-                sw.WriteLine(cell.Name);
-                sw.WriteLine(cell.Expression);
-                sw.WriteLine(cell.Value);
-                if (cell.ReferencesFromThis.Count == 0)
-                    sw.WriteLine("0");
-                else
-                {
-                    sw.WriteLine(cell.ReferencesFromThis.Count);
-                    foreach (var refCell in cell.ReferencesFromThis)
-                        sw.WriteLine(refCell.Name);
-                }
-
-                if (cell.PointersToThis.Count == 0)
-                    sw.WriteLine("0");
-                else
-                {
-                    sw.WriteLine(cell.PointersToThis.Count);
-                    foreach (var pointCell in cell.PointersToThis)
-                        sw.WriteLine(pointCell.Name);
-                }
-            }
+            IFormatter formatter = new BinaryFormatter();  
+            formatter.Serialize(stream, table);
+            stream.Close();
         }
 
-        public void Open(Table table, int row, int column, StreamReader sr, DataGridView dataGridView1)
+        public Table Open(string path)
         {
-            for (var i = 0; i < row; i++)
-            {
-                for (var j = 0; j < column; j++)
-                {
-                    var index = sr.ReadLine();
-                    if (index == null)
-                        throw new OperationCanceledException("Failed to load the file");
-                    var expression = sr.ReadLine();
-                    var value = sr.ReadLine();
-
-                    if (expression != "")
-                        _displayedValues[index] = value;
-                    else
-                        _displayedValues[index] = "";
-
-                    var refCount = Convert.ToInt32(sr.ReadLine());
-                    var newRef = new List<Cell>();
-                    for (var k = 0; k < refCount; k++)
-                    {
-                        var refer = sr.ReadLine();
-                        var curRow = CoordinateEncoder.Decode(refer).Item1;
-                        var curCol = CoordinateEncoder.Decode(refer).Item2;
-
-                        if (curRow < table.RowsAmount && curCol < table.ColumnsAmount)
-                            newRef.Add(table.Sheet[curRow][curCol]);
-                    }
-
-                    var pointCount = Convert.ToInt32(sr.ReadLine());
-                    var newPoint = new List<Cell>();
-                    for (var k = 0; k < pointCount; k++)
-                    {
-                        var point = sr.ReadLine();
-                        var curRow = CoordinateEncoder.Decode(point).Item1;
-                        var curCol = CoordinateEncoder.Decode(point).Item2;
-                        newPoint.Add(table.Sheet[curRow][curCol]);
-                    }
-
-                    _cellService.UpdateCellData(table.Sheet[i][j], expression, value, newRef, newPoint);
-                    var columnIndex = table.Sheet[i][j].Column;
-                    var rowIndex = table.Sheet[i][j].Row;
-                    dataGridView1[columnIndex, rowIndex].Value = _displayedValues[index];
-                }
-            }
+            IFormatter formatter = new BinaryFormatter();  
+            Stream stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);  
+            var table = (Table) formatter.Deserialize(stream);  
+            stream.Close();
+            
+            return table;
         }
     }
 }

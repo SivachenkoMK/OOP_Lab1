@@ -38,7 +38,7 @@ namespace Excel
             var right = WalkRight(context);
 
             Debug.WriteLine("{0} ^ {1}", left, right);
-            return System.Math.Pow(left, right);
+            return Math.Pow(left, right);
         }
         public override double VisitIncDecExpr(LabCalculatorParser.IncDecExprContext context)
         {
@@ -49,11 +49,9 @@ namespace Excel
                 Debug.WriteLine("++{0}", left);
                 return ++left;
             }
-            else //LabCalculatorLexer.DECREMENT
-            {
-                Debug.WriteLine("{0}--", left);
-                return --left;
-            }
+
+            Debug.WriteLine("{0}--", left);
+            return --left;
         }
         public override double VisitAdditiveExpr(LabCalculatorParser.AdditiveExprContext context)
         {
@@ -65,11 +63,9 @@ namespace Excel
                 Debug.WriteLine("{0} + {1}", left, right);
                 return left + right;
             }
-            else //LabCalculatorLexer.SUBTRACT
-            {
-                Debug.WriteLine("{0} - {1}", left, right);
-                return left - right;
-            }
+
+            Debug.WriteLine("{0} - {1}", left, right);
+            return left - right;
         }
 
         public override double VisitMultiplicativeExpr(LabCalculatorParser.MultiplicativeExprContext context)
@@ -82,11 +78,9 @@ namespace Excel
                 Debug.WriteLine("{0} * {1}", left, right);
                 return left * right;
             }
-            else //LabCalculatorLexer.DIVIDE
-            {
-                Debug.WriteLine("{0} / {1}", left, right);
-                return left / right;
-            }
+
+            Debug.WriteLine("{0} / {1}", left, right);
+            return left / right;
         }
         
         public override double VisitMaxExpr(LabCalculatorParser.MaxExprContext context)

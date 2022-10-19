@@ -11,6 +11,8 @@ namespace Excel.Models
 
         public readonly List<List<Cell>> Sheet = new();
 
+        public readonly Dictionary<string, string> DisplayedValues = new();
+
         public Table()
         {
 

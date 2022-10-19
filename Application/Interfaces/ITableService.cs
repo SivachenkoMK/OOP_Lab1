@@ -21,8 +21,8 @@ namespace Excel.Interfaces
 
         bool DeleteColumn(Table table, DataGridView dataGridView1);
 
-        void Save(Table table, StreamWriter sw);
+        void Save(Table table, FileStream stream);
 
-        void Open(Table table, int row, int column, StreamReader sr, DataGridView dataGridView1);
+        Table Open(string path);
     }
 }

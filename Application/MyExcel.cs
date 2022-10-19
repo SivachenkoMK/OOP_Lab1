@@ -1,9 +1,9 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 using Excel.Interfaces;
 using Excel.Models;
-using Excel.Services;
 
 namespace Excel
 {
@@ -17,7 +17,8 @@ namespace Excel
             _tableService = tableService;
             InitializeComponent();
             // TODO: Move to configs
-            InitializeDataGridView(35, 35);
+            InitializeDataGridView(30, 35);
+            CreateTable(30, 35);
         }
 
         private void InitializeDataGridView(int rows, int columns)
@@ -39,7 +40,10 @@ namespace Excel
             }
 
             dataGridView.AutoResizeRowHeadersWidth(DataGridViewRowHeadersWidthSizeMode.AutoSizeToAllHeaders);
+        }
 
+        private void CreateTable(int rows, int columns)
+        {
             _table = _tableService.CreateTable(columns, rows);
         }
 
@@ -74,7 +78,7 @@ namespace Excel
 
         private void addRowButton_Click(object sender, EventArgs e)
         {
-            DataGridViewRow row = new System.Windows.Forms.DataGridViewRow();
+            DataGridViewRow row = new DataGridViewRow();
             if (dataGridView.Columns.Count == 0)
             {
                 MessageBox.Show("There are no colums");  //???
@@ -109,34 +113,38 @@ namespace Excel
         private void saveButton_Click(object sender, EventArgs e)
         {
             var saveFileDialog = new SaveFileDialog();
-            saveFileDialog.Filter = "TableFile|*.txt";
+            saveFileDialog.Filter = "TableFile|*.bin";
             saveFileDialog.Title = "Save table as a file";
             saveFileDialog.ShowDialog();
 
             if (string.IsNullOrEmpty(saveFileDialog.FileName)) return;
             
             var fs = (FileStream)saveFileDialog.OpenFile();
-            using (StreamWriter sw = new StreamWriter(fs))
-                _tableService.Save(_table, sw);
+            _tableService.Save(_table, fs);
             fs.Close();
         }
 
         private void openButton_Click(object sender, EventArgs e)
         {
             var openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "TableFile|*.txt";
+            openFileDialog.Filter = "TableFile|*.bin";
             openFileDialog.Title = "Open Table";
             if (openFileDialog.ShowDialog() != DialogResult.OK)
                 return;
-            var sr = new StreamReader(openFileDialog.FileName);
             _tableService.Clear(_table);
             dataGridView.Rows.Clear();
             dataGridView.Columns.Clear();
-            int.TryParse(sr.ReadLine(), out var row);
-            int.TryParse(sr.ReadLine(), out var column);
-            InitializeDataGridView(row, column);
-            _tableService.Open(_table, row, column, sr, dataGridView);
-            sr.Close();
+            _table = _tableService.Open(openFileDialog.FileName);
+            InitializeDataGridView(_table.RowsAmount, _table.ColumnsAmount);
+            SetDisplayValues();
+        }
+
+        private void SetDisplayValues()
+        {
+            foreach (var cell in _table.Sheet.SelectMany(row => row))
+            {
+                dataGridView[cell.Column, cell.Row].Value = string.IsNullOrEmpty(cell.Expression) ? string.Empty : cell.Value;
+            }
         }
     }
 }
