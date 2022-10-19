@@ -33,6 +33,5 @@ namespace Excel
                     services.AddTransient<MyExcel>();
                 });
         }
-
     }
 }

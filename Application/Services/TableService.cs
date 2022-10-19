@@ -385,7 +385,7 @@ namespace Excel.Services
                 {
                     var index = sr.ReadLine();
                     if (index == null)
-                        throw new NullReferenceException("No fucking clue what is it, rework will be needed"); // TODO: Take a look at this place
+                        throw new OperationCanceledException("Failed to load the file");
                     var expression = sr.ReadLine();
                     var value = sr.ReadLine();
 

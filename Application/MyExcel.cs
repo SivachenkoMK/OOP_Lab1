@@ -108,29 +108,27 @@ namespace Excel
 
         private void saveButton_Click(object sender, EventArgs e)
         {
-            SaveFileDialog saveFileDialog1 = new SaveFileDialog();
-            saveFileDialog1.Filter = "TableFile|*.txt";
-            saveFileDialog1.Title = "Save table file";
-            saveFileDialog1.ShowDialog();
+            var saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "TableFile|*.txt";
+            saveFileDialog.Title = "Save table as a file";
+            saveFileDialog.ShowDialog();
 
-            if (saveFileDialog1.FileName != "")
-            {
-                FileStream fs = (FileStream)saveFileDialog1.OpenFile();
-                StreamWriter sw = new StreamWriter(fs);
+            if (string.IsNullOrEmpty(saveFileDialog.FileName)) return;
+            
+            var fs = (FileStream)saveFileDialog.OpenFile();
+            using (StreamWriter sw = new StreamWriter(fs))
                 _tableService.Save(_table, sw);
-                sw.Close();
-                fs.Close();
-            }
+            fs.Close();
         }
 
         private void openButton_Click(object sender, EventArgs e)
         {
-            OpenFileDialog openFileDialog1 = new OpenFileDialog();
-            openFileDialog1.Filter = "TableFile|*.txt";
-            openFileDialog1.Title = "Open Table File";
-            if (openFileDialog1.ShowDialog() != DialogResult.OK)
+            var openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "TableFile|*.txt";
+            openFileDialog.Title = "Open Table";
+            if (openFileDialog.ShowDialog() != DialogResult.OK)
                 return;
-            StreamReader sr = new StreamReader(openFileDialog1.FileName);
+            var sr = new StreamReader(openFileDialog.FileName);
             _tableService.Clear(_table);
             dataGridView.Rows.Clear();
             dataGridView.Columns.Clear();

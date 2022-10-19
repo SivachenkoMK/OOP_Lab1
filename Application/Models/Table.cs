@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Excel.Models
 {
+    [Serializable]
     public class Table
     {
         public int ColumnsAmount { get; set; }
