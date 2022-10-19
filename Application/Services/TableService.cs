@@ -50,38 +50,30 @@ namespace Excel.Services
             table.ColumnsAmount = 0;
         }
 
-        private string GetValue(string expression)
+        private void TryGetValue(string expression, out string value)
         {
-            try
-            {
-                var res = Evaluator.GetValue(expression).ToString();
-                if (res == "∞")
-                    res = "Division by zero error";
-                return res;
-            }
-            catch (Exception)
-            {
-                return "Error";
-            }
+            value = Evaluator.GetValue(expression).ToString();
+            if (value == "∞")
+                throw new ArgumentException("Value is too big, or division by 0");
         }
 
         public void ChangeCellWithAllPointers(Table table, int row, int col, string expression,
             DataGridView dataGridView1) //refresh cell value with check loops(Main func)
         {
-            var currentCell = table.Sheet[row][col];
-            _cellService.DeletePointersAndReferences(currentCell);
-            currentCell.Expression = expression;
-            currentCell.NewReferencesFromThis.Clear();
+            var cell = table.Sheet[row][col];
+            _cellService.DeletePointersAndReferences(cell);
+            cell.Expression = expression;
+            cell.NewReferencesFromThis.Clear();
 
             if (expression != "")
             {
                 if (expression[0] != '=') //expression not formula
                 {
-                    currentCell.Value = expression;
-                    table.DisplayedValues[GetFullName(row, col)] = expression;
-                    foreach (var cell in currentCell.PointersToThis)
+                    cell.Value = expression;
+                    table.DisplayedValues[GetFullNameForCell(row, col)] = expression;
+                    foreach (var pointingToThis in cell.PointersToThis)
                     {
-                        RefreshCellAndPointers(table, cell, dataGridView1);
+                        RefreshCellAndPointers(table, pointingToThis, dataGridView1);
                     }
 
                     return;
@@ -92,36 +84,61 @@ namespace Excel.Services
             if (newExpression != "")
                 newExpression = newExpression.Remove(0, 1);
 
-            if (_cellService.IsLoop(currentCell)) //check new references for loop 
+            if (_cellService.IsLoop(cell)) //check new references for loop 
             {
                 MessageBox.Show("There is a loop! Change the expression");
-                currentCell.Expression = "";
-                currentCell.Value = "";
+                cell.Expression = "";
+                cell.Value = "";
                 dataGridView1[col, row].Value = "0";
                 return;
             }
+            
+            _cellService.AddPointersAndReferences(cell);
 
-            //new_references without loops
-            _cellService.AddPointersAndReferences(currentCell);
-            string val = GetValue(newExpression); //calculate ready expression
+            var isSuccessful = GetValue(dataGridView1, newExpression, cell, out var val);
 
-            if (val == "Error") //cannot calculate
-            {
-                MessageBox.Show("Error in cell " + currentCell.Name);
-                currentCell.Expression = "";
-                currentCell.Value = "0";
-                dataGridView1[currentCell.Column, currentCell.Row].Value = "0";
+            if (!isSuccessful)
                 return;
-            }
-
-            currentCell.Value = val;
-            table.DisplayedValues[GetFullName(row, col)] = val;
-            foreach (var cell in currentCell.PointersToThis) //refresh all cells which has formula with currCell
-                RefreshCellAndPointers(table, cell, dataGridView1);
+            
+            cell.Value = val;
+            table.DisplayedValues[GetFullNameForCell(row, col)] = val;
+            foreach (var pointingToThisCells in cell.PointersToThis)
+                RefreshCellAndPointers(table, pointingToThisCells, dataGridView1);
 
         }
 
-        private string GetFullName(int row, int col)
+        private bool GetValue(DataGridView dataGridView1, string newExpression, Cell cell, out string value)
+        {
+            bool isSuccess = true;
+            try
+            {
+                TryGetValue(newExpression, out value);
+            }
+            catch (ArgumentException argumentException)
+            {
+                MessageBox.Show($"{argumentException.Message}: in the cell {cell.Name}");
+                WrongSetUpCellFormatting(dataGridView1, cell, out value);
+                return false;
+            }
+            catch (Exception)
+            {
+                MessageBox.Show($"Error in cell {cell.Name}");
+                WrongSetUpCellFormatting(dataGridView1, cell, out value);
+                return false;
+            }
+            
+            return isSuccess;
+        }
+
+        private void WrongSetUpCellFormatting(DataGridView dataGridView1, Cell cell, out string value)
+        {
+            cell.Expression = "";
+            cell.Value = "0";
+            dataGridView1[cell.Column, cell.Row].Value = "0";
+            value = "";
+        }
+
+        private string GetFullNameForCell(int row, int col)
         {
             var cell = new Cell(row, col);
             return cell.Name;
@@ -133,19 +150,13 @@ namespace Excel.Services
             var newExpression =
                 ConvertReferences(table, cell.Row, cell.Column, cell.Expression); //expression without Cell Names
             newExpression = newExpression.Remove(0, 1); //remove '='
-            var value = GetValue(newExpression); //calculate ready expression
+            var isSuccess = GetValue(dataGridView1, newExpression, cell, out var value); //calculate ready expression
 
-            if (value == "Error")
-            {
-                MessageBox.Show("Error in cell " + cell.Name);
-                cell.Expression = "";
-                cell.Value = "0";
-                dataGridView1[cell.Column, cell.Row].Value = "0";
+            if (!isSuccess)
                 return false;
-            }
 
             table.Sheet[cell.Row][cell.Column].Value = value;
-            table.DisplayedValues[GetFullName(cell.Row, cell.Column)] = value;
+            table.DisplayedValues[GetFullNameForCell(cell.Row, cell.Column)] = value;
             dataGridView1[cell.Column, cell.Row].Value = value;
 
             return cell.PointersToThis.All(point => RefreshCellAndPointers(table, point, dataGridView1));
@@ -153,19 +164,16 @@ namespace Excel.Services
 
         private void RefreshReferences(Table table) //refresh only refs from each cell in all table
         {
-            foreach (var row in table.Sheet)
+            foreach (var cell in table.Sheet.SelectMany(row => row))
             {
-                foreach (var cell in row)
-                {
-                    cell.ReferencesFromThis.Clear();
-                    cell.NewReferencesFromThis.Clear();
-                    if (string.IsNullOrWhiteSpace(cell.Expression))
-                        continue;
-                    if (cell.Expression[0] != '=') continue;
+                cell.ReferencesFromThis.Clear();
+                cell.NewReferencesFromThis.Clear();
+                if (string.IsNullOrWhiteSpace(cell.Expression))
+                    continue;
+                if (cell.Expression[0] != '=') continue;
                     
-                    ConvertReferences(table, cell.Row, cell.Column, cell.Expression);
-                    cell.ReferencesFromThis.AddRange(cell.NewReferencesFromThis);
-                }
+                ConvertReferences(table, cell.Row, cell.Column, cell.Expression);
+                cell.ReferencesFromThis.AddRange(cell.NewReferencesFromThis);
             }
         }
 
@@ -235,7 +243,7 @@ namespace Excel.Services
             var curCount = table.RowsAmount - 1;
             for (var i = 0; i < table.ColumnsAmount; i++)
             {
-                var name = GetFullName(curCount, i);
+                var name = GetFullNameForCell(curCount, i);
                 if (table.DisplayedValues[name] != "0" && table.DisplayedValues[name] != "" && table.DisplayedValues[name] != " ")
                     notEmptyCells.Add(table.Sheet[curCount][i]);
                 if (table.Sheet[curCount][i].PointersToThis.Count != 0) //select cells that points to deleted cell
@@ -267,7 +275,7 @@ namespace Excel.Services
 
             for (var i = 0; i < table.ColumnsAmount; i++)
             {
-                var name = GetFullName(curCount, i);
+                var name = GetFullNameForCell(curCount, i);
                 table.DisplayedValues.Remove(name);
             }
 
@@ -296,7 +304,7 @@ namespace Excel.Services
             var curCount = table.ColumnsAmount - 1;
             for (var i = 0; i < table.RowsAmount; i++)
             {
-                var name = GetFullName(i, curCount);
+                var name = GetFullNameForCell(i, curCount);
                 if (table.DisplayedValues[name] != "0" && table.DisplayedValues[name] != "" && table.DisplayedValues[name] != " ")
                     notEmptyCells.Add(table.Sheet[i][curCount]);
                 if (table.Sheet[i][curCount].PointersToThis.Count != 0) //select cells that points to deleted cell
@@ -328,7 +336,7 @@ namespace Excel.Services
 
             for (var i = 0; i < table.RowsAmount; i++)
             {
-                var name = GetFullName(i, curCount);
+                var name = GetFullNameForCell(i, curCount);
                 table.DisplayedValues.Remove(name);
             }
 
